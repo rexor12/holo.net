@@ -1,0 +1,584 @@
+{
+    "feature_disabled_error": "I'm sorry, but this feature is disabled. Please, try again later. (｡•́︿•̀｡)",
+    "feature_quota_exhausted_error": "I'm sorry, but I've exhausted my quota for this feature due to massive user interest. Please, try again later. (｡•́︿•̀｡)",
+    "rate_limit_error": "I'm sorry, but an error occurred when I tried to communicate with the server this feature relies on. Please, try again in a few minutes. (｡•́︿•̀｡)",
+    "missing_required_argument_error": "I'm sorry, but I cannot handle your request due to a missing argument: {argname}. Please, try again by specifying the argument. (｡•́︿•̀｡)",
+    "server_not_found_error": "I'm sorry, but I couldn't find the requested server. Please, double check for any typos. (｡•́︿•̀｡)",
+    "channel_not_found_error": "I'm sorry, but I couldn't find the requested channel. Please, double check for any typos. (｡•́︿•̀｡)",
+    "user_not_found_error": "I'm sorry, but I couldn't find the requested user. Please, double check for any typos. (｡•́︿•̀｡)",
+    "missing_dm_permission_error": "I'm sorry, but I don't have the permission to DM users. Please, kindly ask your server administrator to grant me the permission. Thank you! („• ᴗ •„)",
+    "invalid_argument_error": "I'm sorry, but you invoked the command with an invalid argument. Please, double check for any typos and if you believe this is an issue with me, report it (see `/info`). Thank you! („• ᴗ •„)",
+    "database_serialization_error": "I'm sorry, but an error has occurred while processing your request. Please, try again and if the issue persists, report it (see `/info`). Thank you! („• ᴗ •„)",
+    "Interactions": {
+        "halted_interaction_error": "You are forbidden from using this command, akin to a restless wolf barred from its hunting grounds.",
+        "invalid_interaction_data_error": "Unfortunately, your interaction has been misguided. It may have expired.",
+        "invalid_interaction_error": "Unfortunately, your interaction has been misguided. The associated command may have become unavailable.",
+        "server_only_interaction_error": "Alas, I cannot perform your request in the current location. Try it in a server.",
+        "unbound_interaction_user_error": "Pray, refrain from laying claim to what is not rightfully yours, as the owner guards it with a watchful eye.",
+        "unhandled_interaction_error": "Pray forgive me, something unexpected has interrupted my hunt. I have notified my master about this mishap.",
+        "not_available_for_server_error": "I'm sorry, but this command isn't available for your server. (｡•́︿•̀｡)",
+        "CooldownError": "Your enthusiasm is duly noted, but pray, grant me a moment's respite. ({SecondsLeft:#,#} seconds)",
+        "interaction_context_not_supported_error": "Alas, I cannot perform your request in the current location."
+    },
+    "common": {
+        "buttons": {
+            "cancel": "Cancel",
+            "remove": "Remove",
+            "view_all": "View all",
+            "yes": "Yes",
+            "no": "No"
+        }
+    },
+    "Modules": {
+        "admin": {
+            "auto_role_menu_workflow": {
+                "embed_footer": "Grab or remove a role by selecting an emoji.",
+                "emoji_not_found_error": "Pray, provide an emoji I can find in my lair here.",
+                "builder_expired_error": "You took way too long and your menu builder has spoiled. Pray, give it a try anew.",
+                "too_many_roles_error": "Ah, it seems this basket is full of apples now. Get a new one so we can continue our work.",
+                "role_selector_message": "Select the role you'd like to add or go back to the main menu.",
+                "role_modal_title": "Select an emoji to be used.",
+                "role_modal_field": "Emoji name",
+                "builder_in_progress_error": "This board is not yet available for your eyes. Pray, return to it later.",
+                "user_role_added": "I have assigned you the <@&{role_id}> role as per your request.",
+                "user_role_removed": "I have removed your <@&{role_id}> role as per your request.",
+                "role_added_already_error": "You appear to be a bit forgetful. You have already put that apple in the basket.",
+                "cannot_remove_only_role_error": "Pray, do not take my last apple from the basket.",
+                "role_not_added_error": "This basket does not seem to have the apple you seek.",
+                "changes_saved_message": "I have recorded the modifications you have implemented.",
+                "details_too_long_error": "Pray, shorten the title and description of your menu to be no longer than 120 characters each.",
+                "detail_modal_title": "Edit details",
+                "detail_modal_title_field": "Menu title",
+                "detail_modal_description_field": "Short description",
+                "detail_modal_roles_field": "Show roles (yes/no)",
+                "detail_modal_exclusive_field": "Exclusive (yes/no)"
+            },
+            "help_workflow": {
+                "explanation": "Rules are logically separated by the following types:\n- **Global rules**: These rules apply to every command, regardless of group, sub-group or name.\n- **Group rules**: These rules apply to entire command groups, such as \"admin\".\n- **Sub-group rules**: These rules apply to a specific sub-group of a specific group, such as \"commands\".\n- **Command rules**: These rules apply to specific commands, such as \"help\".\nEach one of these groups may apply to all channels or a specific channel only.\n\nThe rule precedence is as follows: _global rules > group rules > sub-group rules > command rules_. Rules that apply to all channels are applied before those that apply to specific channels only.\n\nFor example, to allow the execution of commands in a single channel only, you would need two rules:\n1. :no_entry: Forbid the execution of all commands in every channel.\n2. :white_check_mark: Allow the execution of all commands in a specific channel."
+            },
+            "remove_all_command_rules_workflow": {
+                "all_rules_removed": "I've removed all of the rules specified for this server. („• ᴗ •„)",
+                "no_rules_removed": "I haven't removed any rules. You must confirm your intention correctly."
+            },
+            "remove_command_rule_workflow": {
+                "rule_removed": "The rule has been removed."
+            },
+            "set_command_rule_workflow": {
+                "invalid_command_error": "I'm sorry, but I cannot identify the command you specified, hence the rule couldn't be set. (｡•́︿•̀｡)",
+                "rule_set_successfully": "Your rule has been set: {rule_text}",
+                "server_only_command_error": "I'm sorry, but command rules can be defined in servers only. (｡•́︿•̀｡)"
+            },
+            "test_command_workflow": {
+                "command_can_execute": "The command _can be_ executed in <#{channel_id}>.",
+                "command_cannot_execute": "The command _cannot be_ executed in <#{channel_id}>.",
+                "invalid_command_error": "I'm sorry, but I cannot identify the command you specified. Please, double check for any typos. (｡•́︿•̀｡)"
+            },
+            "view_command_rules_workflow": {
+                "embed_title": "Command rules",
+                "embed_description": "The list of command rules set on this server.",
+                "embed_name_field": "Rule #{rule_id}",
+                "no_command_rules_configured": "No command rules matching the query have been configured for the server.",
+                "subgroup_requires_group_error": "You can specify a subgroup if and only if you specify a group, too."
+            }
+        },
+        "dev": {
+            "maintenance_mode_enabled_error": "I'm sorry, but I'm undergoing maintenance right now. Please, try again a bit later. („• ᴗ •„)",
+            "set_log_level_workflow": {
+                "log_level_changed": "The log level has been changed."
+            },
+            "set_operating_mode_workflow": {
+                "normal_mode_enabled": "Normal operating mode has been enabled.",
+                "maintenance_mode_enabled": "Maintenance mode has been enabled."
+            }
+        },
+        "General": {
+            "divorce_workflow": {
+                "not_married_error": "I can't divorce you because you aren't married.",
+                "confirm_divorce": "Getting divorced will completely reset every relationship statistics with <@{spouse_id}>. Are you sure you want to get divorced?",
+                "got_divorced": "<@{user_id}> and <@{spouse_id}>; as unfortunate as it may be, I bear witness to your divorce. May you encounter happiness once more on your journeys.",
+                "divorce_canceled": "As per your decision, you shall not be divorced. May you stay as happy together as you have been so far.",
+                "cooldown_error": "You have just bid farewell to your dear one, much like a wolf abandoning its mate. You might want to take a moment to reflect upon this decision before you venture forth once more, as if the whims of your heart were but a mere game. ({seconds_left:,.0f} seconds)"
+            },
+            "GetRandomCookie": {
+                "NoCookiesError": "I'm sorry, but I don't have any fortune cookies right now. (｡•́︿•̀｡)",
+                "EmbedTitle": "Fortune Cookie",
+                "EmbedFooter": "Cookie #{Id}",
+                "CooldownError": "Alas, it appears I have eaten all the cookies. I would kindly ask that you attempt to take one a bit later. ({SecondsLeft:#,#} seconds)"
+            },
+            "magic_eight_ball_workflow": {
+                "responses": [
+                    "Yes.",
+                    "But of course!",
+                    "Certainly.",
+                    "Without a doubt.",
+                    "Yes, definitely.",
+                    "Most likely.",
+                    "It seems to be the case.",
+                    "No.",
+                    "Of course, not!",
+                    "Quite unlikely.",
+                    "Don't count on it.",
+                    "I don't think so.",
+                    "Maybe.",
+                    "You don't have to know that.",
+                    "That's not your cup of tea.",
+                    "Who knows..."
+                ],
+                "response_message": "> {question}\n\n{answer}",
+                "cooldown_error": "The ball, akin to a treasured relic, is currently in the midst of its well-deserved respite. ({seconds_left:,.0f} seconds)"
+            },
+            "marry_workflow": {
+                "already_married": "You are already married to <@{spouse_id}>. You wouldn't want to cheat on them now, would you?",
+                "already_married_other": "I'm sorry, but <@{user_id}> is already married to <@{spouse_id}>. (｡•́︿•̀｡)",
+                "confirm_marry": "<@{spouse_id}>, do you take <@{user_id}> to be your lawfully wedded partner? („• ᴗ •„)",
+                "confirm_remarry": "<@{spouse_id}>, your beloved <@{user_id}> would like to renew your marriage vows. Do you still take <@{user_id}> to be your lawfully wedded partner?",
+                "confirm_yes": "I do",
+                "confirm_no": "Nope",
+                "request_refused": "I'm sorry, <@{user_id}>, but <@{spouse_id}> refused your marriage proposal. (｡•́︿•̀｡)",
+                "got_married": "💐💐💐 <@{user_id}> and <@{spouse_id}> are now married! May the love you share today grow stronger as you grow old together. 💐💐💐",
+                "got_remarried": "💐💐💐 Rejoice, <@{user_id}> for <@{spouse_id}> is your partner still. 💐💐💐",
+                "got_divorced": "<@{user_id}> and <@{spouse_id}>; as unfortunate as it may be, I bear witness to your divorce. May you encounter happiness once more on your journeys.",
+                "not_married_error": "Oops, there seems to have been a misunderstanding and you aren't married. Please, disregard this message. („• ᴗ •„)",
+                "cannot_marry_self": "I'm sorry, but you can't get married with yourself. Keep looking and I'm sure love will find you. („• ᴗ •„)",
+                "cooldown_error": "You have just sprung forth with a proposal, like an impulsive wolf driven by desire. Hold your horses, for a moment's pause is in order. ({seconds_left:,.0f} seconds)"
+            },
+            "match_users_workflow": {
+                "love_types": [
+                    "Eros - romantic, passionate love of the body",
+                    "Storge - unconditional, familial love",
+                    "Agape - selfless, universal love",
+                    "Philia - affectionate, friendly love",
+                    "Ludus - playful, flirtatious love",
+                    "Pragma - committed, long-lasting love"
+                ],
+                "self_love_type": "Philautia",
+                "description_base": "This is what I think about the relationship between <@{user_id1}> and <@{user_id2}>:\n\n",
+                "descriptions": [
+                    "_{love_type}_\nThis relationship is based on lust, so it won't work for anything serious.",
+                    "_{love_type}_\nThis is just the kind of love between siblings.",
+                    "_{love_type}_\nWhile it may work, this is one really open relationship. Like some WiFi networks.",
+                    "_{love_type}_\nIt feels almost as if I were looking at two best friends.",
+                    "_{love_type}_\nIf you keep flirting just a little longer, this relationship may develop into something serious.",
+                    "_{love_type}_\nThis relationship has reached a new high. It's the embodiment of love."
+                ],
+                "self_description": "_{love_type}_\nAlways love yourself, <@{user_id}>, you're a great addition to the world.",
+                "title": "Matchmaker's Insight",
+                "chemistry": "Chemistry",
+                "communication": "Communication",
+                "trust": "Trust",
+                "commitment": "Commitment",
+                "security": "Security",
+                "type": "Type of love",
+                "overall_score": "Overall score",
+                "overall_score_value": "{score}/10 {emoji}",
+                "overall_score_emojis": [
+                    "💔",
+                    "👩‍❤️‍💋‍👨",
+                    "💓",
+                    "🤼",
+                    "❤️",
+                    "💙",
+                    "🤍"
+                ],
+                "footer": "Data will refresh in {refresh_in} minute(s).",
+                "cooldown_error": "Your interests span far and wide, like a curious wolf exploring the vast forest. But heed this advice: exercise patience and restrain your fervor. ({seconds_left:,.0f} seconds)"
+            },
+            "poll_workflow": {
+                "modal_title": "New poll",
+                "modal_option_label": "Option #{index}",
+                "embed_title": "Poll results",
+                "embed_vote_button": "Option {index}",
+                "poll_expired_error": "This poll has reached its conclusion, therefore you cannot cast your vote anymore.",
+                "already_voted_error": "Your vote has been recorded already, and thus, you are unable to cast it anew in this realm of decision.",
+                "description_option": "**Option #{index}**\n{option}"
+            },
+            "react_workflow": {
+                "no_image_error": "I'm sorry, but I couldn't find a matching picture for you. Please, try again a bit later or try another category. (｡•́︿•̀｡)",
+                "invalid_action_error": "I'm sorry, but the action you specified isn't valid. Please, try again with a correct option. (｡•́︿•̀｡)",
+                "remote_api_error": "I'm sorry, but something went wrong while fetching an image for you. Please, try again a bit later; or, if the problem persists, report the issue (see `/info`). Thank you! („• ᴗ •„)",
+                "embed_title": "Reaction",
+                "embed_footer": "Powered by waifu.pics",
+                "cooldown_error": "I perceive your yearning to showcase your feelings to the world. Rest, like a wolf in repose, before resuming your spirited endeavor. ({seconds_left:,.0f} seconds)",
+                "actions": {
+                    "awoo": "<@{user_id}> thinks they're a dog. Awoo~",
+                    "awoo_target": "<@{user_id}> impresses <@{target_user_id}> as a dog. Awoo~",
+                    "bite": "<@{user_id}> wants to bite someone. How odd.",
+                    "bite_target": "<@{user_id}> bites <@{target_user_id}>. Why would you do that?",
+                    "blush": "<@{user_id}> is blushing. Cute.",
+                    "blush_target": "<@{user_id}> is blushing because of <@{target_user_id}>.",
+                    "bonk": "<@{user_id}> performs a mass-bonk attack. It's very effective!",
+                    "bonk_target": "<@{user_id}> bonks <@{target_user_id}>. No being lewd here!",
+                    "bully": "<@{user_id}> wants to bully someone. Or be bullied maybe?",
+                    "bully_target": "<@{user_id}> is bullying <@{target_user_id}>. Don't do it!",
+                    "cry": "<@{user_id}> is crying. Don't cry! (｡•́︿•̀｡)",
+                    "cry_target": "<@{user_id}> is crying on <@{target_user_id}>'s shoulders. Don't cry! (｡•́︿•̀｡)",
+                    "cuddle": "<@{user_id}> is looking for someone to cuddle with.",
+                    "cuddle_target": "<@{user_id}> cuddles with <@{target_user_id}>.",
+                    "dance": "<@{user_id}> is dancing from happiness.",
+                    "dance_target": "<@{user_id}> is dancing with <@{target_user_id}>.",
+                    "handhold": "<@{user_id}> wants to hold someone's hand. Lewd!",
+                    "handhold_target": "<@{user_id}> is holding <@{target_user_id}>'s hand. Lewd!",
+                    "happy": "<@{user_id}> showers the world with happiness.",
+                    "happy_target": "<@{user_id}> is happy thanks to <@{target_user_id}>.",
+                    "highfive": "<@{user_id}> gives themselves a high-five. It looks funny.",
+                    "highfive_target": "<@{user_id}> gives <@{target_user_id}> a high-five.",
+                    "hug": "<@{user_id}> would really like a hug...",
+                    "hug_target": "<@{user_id}> hugs <@{target_user_id}>.",
+                    "kill": "<@{user_id}> wants to kill someone. Scary!",
+                    "kill_target": "<@{user_id}> kills <@{target_user_id}>. Criminal!",
+                    "kiss": "<@{user_id}> is looking for someone to kiss.",
+                    "kiss_target": "<@{user_id}> is kissing <@{target_user_id}>.",
+                    "lick": "<@{user_id}> wants to lick someone. How odd.",
+                    "lick_target": "<@{user_id}> is licking <@{target_user_id}>. How odd.",
+                    "neko": "<@{user_id}> is showing off their neko.",
+                    "neko_target": "<@{user_id}> is showing off their neko to you, <@{target_user_id}>.",
+                    "nom": "<@{user_id}> wants to chew on something. Or someone.",
+                    "nom_target": "<@{user_id}> is chewing on <@{target_user_id}>. Ew, saliva...",
+                    "pat": "<@{user_id}> would like some headpats.",
+                    "pat_target": "<@{user_id}> is giving <@{target_user_id}> some headpats.",
+                    "poke": "<@{user_id}> pokes the air. Derp moment.",
+                    "poke_target": "<@{user_id}> pokes <@{target_user_id}>.",
+                    "slap": "<@{user_id}> slaps a random passerby. Ouch!",
+                    "slap_target": "<@{user_id}> slaps <@{target_user_id}>. Ouch!",
+                    "smile": "<@{user_id}> smiles with determination.",
+                    "smile_target": "<@{user_id}> smiles at <@{target_user_id}>.",
+                    "smug": "<@{user_id}> is acting smug. Concerning.",
+                    "smug_target": "<@{user_id}> is acting smug towards <@{target_user_id}>. Concerning.",
+                    "waifu": "<@{user_id}> would like to introduce this sweet waifu.",
+                    "waifu_target": "<@{user_id}> would like to introduce you to this sweet waifu, <@{target_user_id}>.",
+                    "wave": "<@{user_id}> is waving. Hello world!",
+                    "wave_target": "<@{user_id}> waves at <@{target_user_id}>.",
+                    "wink": "<@{user_id}> winks. At what, though?",
+                    "wink_target": "<@{user_id}> winks at <@{target_user_id}>."
+                }
+            },
+            "roll_number_workflow": {
+                "unusual_roll_result": "I rolled an unusually shaped die for you and got {value}. („• ᴗ •„)",
+                "usual_roll_result": "I rolled a {name} for you and got {value}. („• ᴗ •„)",
+                "die_1": "Möbius strip",
+                "die_4": "tetrahedron",
+                "die_6": "cube",
+                "die_8": "octahedron",
+                "die_10": "pentagonal trapezohedron",
+                "die_12": "dodecahedron",
+                "die_20": "icosahedron",
+                "die_24": "pseudo-deltoidal icositetrahedron",
+                "die_50": "icosikaipentagonal trapezohedron",
+                "die_120": "disdyakis triacontahedron"
+            },
+            "summon_user_workflow": {
+                "self_summon": "And thus, be summoned, <@{user_id}>! („• ᴗ •„)",
+                "dm_summon_with_message": "{user_name} requests your presence at <#{channel_id}>:\n> {message}",
+                "dm_summon": "{user_name} requests your presence at <#{channel_id}>.",
+                "successful_summon": "I'll be back in a moment with <@{user_id}>...",
+                "cannot_summon_bot_error": "I'm sorry, but I'd rather not disturb a fellow bot. (｡•́︿•̀｡)"
+            },
+            "view_bot_info_workflow": {
+                "embed_title": "Holo's information",
+                "embed_footer": "Brought to you by rexor12",
+                "general_value": "Version: _{version}_\nLatency: _{latency:,.2f} ms_\nServers: _{servers}_\nTime: _{server_time:%I:%M:%S %p, %m/%d/%Y %Z}_",
+                "project_home": "Project home",
+                "report_bug": "Report a bug",
+                "request_feature": "Request a feature"
+            },
+            "view_emoji_workflow": {
+                "emoji_not_found_error": "I'm sorry, but I couldn't find the emoji you requested. Please, double check for any typos. (｡•́︿•̀｡)",
+                "invalid_emoji_error": "I'm sorry, but the emoji you requested isn't an image asset based one, so I can't embed it. (｡•́︿•̀｡)"
+            },
+            "view_marriage_workflow": {
+                "not_married_error": "I'm sorry, but you don't seem to be married, yet. I'm rooting for you, though. („• ᴗ •„)",
+                "other_not_married_error": "I'm sorry, but <@{user_id}> doesn't seem to be married, yet.",
+                "embed_title": "Marriage details",
+                "embed_description": "<@{user_id1}> and <@{user_id2}> have been married since <t:{married_at}:D> which was <t:{married_at}:R>.\n\n🤗 Hugs: _{hugs}_ • Cuddles: _{cuddles}_\n😘 Kisses: _{kisses}_ • Licks: _{licks}_\n🥰 Pats: _{pats}_ • Handholds: _{handholds}_\n🥴 Pokes: _{pokes}_ • Bites: _{bites}_",
+                "embed_field_xp": "Experience points",
+                "embed_field_level": "Level",
+                "embed_field_match_bonus": "Match bonus",
+                "xp_max_value": "MAX",
+                "xp_value": "{current_xp}/{required_xp}"
+            },
+            "view_marriage_ranking_workflow": {
+                "ranking_types": [
+                    "level",
+                    "age"
+                ],
+                "no_married_users_error": "I'm sorry, but there are no married users on this server or this pagination has expired.",
+                "embed_title": "Marriage Rankings",
+                "embed_description": "Below are the rankings by _{ranking_type}_.\n\n{rankings}",
+                "level_top1_descriptor": "🤍 **{user_name1}** x **{user_name2}** • Level _{level}_",
+                "level_top2_descriptor": "💙 **{user_name1}** x **{user_name2}** • Level _{level}_",
+                "level_top3_descriptor": "❤️ **{user_name1}** x **{user_name2}** • Level _{level}_",
+                "level_other_descriptor": "{rank}. **{user_name1}** x **{user_name2}** • Level _{level}_",
+                "age_top1_descriptor": "🤍 **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>",
+                "age_top2_descriptor": "💙 **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>",
+                "age_top3_descriptor": "❤️ **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>",
+                "age_other_descriptor": "{rank}. **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>"
+            },
+            "view_user_avatar_workflow": {
+                "embed_footer": "Artwork by {artist}",
+                "embed_title_global": "{user}'s global avatar",
+                "embed_title_server": "{user}'s server specific avatar",
+                "no_avatar_error": "I'm sorry, but <@{user_id}> doesn't have an avatar. (｡•́︿•̀｡)",
+                "global_button": "Global",
+                "server_button": "Server"
+            },
+            "view_user_banner_workflow": {
+                "embed_title": "{user}'s banner",
+                "no_banner_error": "I'm sorry, but <@{user_id}> doesn't have a banner. (｡•́︿•̀｡)"
+            }
+        },
+        "giveaways": {
+            "giveaway_types": {
+                "game": "Game"
+            },
+            "publish_new_giveaways_event_listener": {
+                "new_giveaways_crosspost": "Behold! I've just stumbled upon a bountiful harvest of delightful apples.\n\n{items}",
+                "new_giveaways_crosspost_list_item": "   ⦁ [{source}] [{title}]({url})",
+                "new_giveaways_crosspost_header": "New Giveaways",
+                "new_giveaways_crosspost_footer": "Click the title to open the associated store page.",
+                "cannot_announce_error": "I'm sorry, but I cannot announce new giveaways in <#{channel_id}> in {server_name}. Please, make sure I have the permissions to send messages there. (｡•́︿•̀｡)"
+            },
+            "reset_scraper_workflow": {
+                "done": "The scraper has been reset."
+            },
+            "set_announcement_channel_workflow": {
+                "channel_set": "From now on I'll announce new giveaways in <#{channel_id}>.",
+                "channel_unset": "From now on I won't announce new giveaways in any channel.",
+                "forbidden_error": "I'm sorry, but I couldn't follow/unfollow the announcement channel. Please, make sure I have the permissions to manage webhooks. (｡•́︿•̀｡)",
+                "invalid_channel_error": "I'm sorry, but I couldn't follow/unfollow the announcement channel. Please, make sure the channel you're trying to subscribe is a regular text channel. (｡•́︿•̀｡)"
+            },
+            "view_active_giveaways_workflow": {
+                "no_active_giveaways": "I'm sorry, but currently there are no active giveaways. Please, check back later. (｡•́︿•̀｡)",
+                "selector_placeholder": "Choose a giveaway",
+                "embed_title": "Giveaway details",
+                "embed_field_expires": "Expires",
+                "embed_field_expires_value": "<t:{end_time}:R>",
+                "embed_field_type": "Type",
+                "embed_field_claim_at": "Claim at",
+                "embed_footer": "Sponsored by {source_name}"
+            }
+        },
+        "google": {
+            "google_error": "I'm sorry, but a Google internal error has occurred. Please, try again a bit later; or, if the problem persists, report the issue (see `/info`). Thank you! („• ᴗ •„)",
+            "search_google_workflow": {
+                "no_results": "I couldn't find any good results for you. Please, refine your keywords and try again. („• ᴗ •„)",
+                "embed_title": "Search results",
+                "embed_description_with_error": "I'm sorry, but Google couldn't provide any more valid results.\n\n{result_title}",
+                "embed_footer": "Showing result {result_index} of {result_count}. Discord may choose not to display certain images.",
+                "text_result": "Showing result {result_index} of {result_count}:\n{url}",
+                "text_result_with_error": "I'm sorry, but Google couldn't provide any more valid results.\n\nShowing result {result_index} of {result_count}:\n{url}"
+            },
+            "translate_text_workflow": {
+                "no_result": "I'm sorry, but I'm unable to translate your text. (｡•́︿•̀｡)",
+                "invalid_text_length": "I'm sorry, but the text to be translated cannot be longer than {maxlength} characters. Please, shorten the text and try again. („• ᴗ •„)",
+                "embed_title": "Translation ({source} > {target})",
+                "embed_footer": "Requested by {user}",
+                "source_text": "Source text",
+                "result_text": "Result text"
+            }
+        },
+        "hentai": {
+            "link_hentai_workflow": {
+                "missing_site_or_code_error": "You must specify both the site and the identifier.",
+                "nhentai_invalid_code_error": "I'm sorry, but you specified a code that isn't valid for NHentai. It should look similar to this: _166806_. Please, double check for any typos. (｡•́︿•̀｡)",
+                "ehentai_invalid_code_error": "I'm sorry, but you specified a code that isn't valid for E-Hentai. It should look similar to this: _945882/2d77566ffe_. Please, double check for any typos. (｡•́︿•̀｡)",
+                "invalid_site_error": "I'm sorry, but you specified a site I don't know how to use. Please, double check for any typos. (｡•́︿•̀｡)"
+            }
+        },
+        "moderation": {
+            "permissions": {
+                "0": "none",
+                "1": "mute users",
+                "2": "kick users",
+                "4": "ban users",
+                "8": "warn users"
+            },
+            "reason_out_of_range_error": "I'm sorry, but the reason's length must be between {min} and {max} characters. Please, correct it and try again. (｡•́︿•̀｡)",
+            "warn_count_out_of_range_error": "I'm sorry, but the number of warn strikes must fall between {min} and {max}. Please, correct it and try again. (｡•́︿•̀｡)",
+            "duration_out_of_range_error": "I'm sorry, but the duration must fall between {min} and {max}. Please, correct it and try again. (｡•́︿•̀｡)",
+            "invalid_time_input_error": "I'm sorry, but the amount of time you've specified is invalid. Please, use one of the following formats: `1h 15m`, `1h15m`, `1000s`, `2d` or `1:15`. Valid quantifiers are `d` (days), `h` (hours), `m` (minutes) and `s` (seconds).",
+            "add_moderator_permission_workflow": {
+                "permission_assigned": "I've assigned <@{user_id}> the permission to {permission}."
+            },
+            "remove_moderator_permission_workflow": {
+                "permission_revoked": "I've revoked <@{user_id}>'s permission to {permission}."
+            },
+            "ban_user_workflow": {
+                "days_out_of_range_error": "I'm sorry, but the number of days must fall between {min} and {max}. Please, correct it and try again. (｡•́︿•̀｡)",
+                "cannot_ban_user_error": "I'm sorry, but I couldn't banish <@{user_id}>. Please, make sure I have the required permissions and they don't have a role ranking higher than mine. (｡•́︿•̀｡)",
+                "user_banned_dm": "{user_name} requested I banish you from {server_name}. I'm sorry to see you go. (｡•́︿•̀｡)\n> {reason}",
+                "user_banned_dm_no_reason": "{user_name} requested I banish you from {server_name}. I'm sorry to see you go. (｡•́︿•̀｡)",
+                "user_banned": "I've successfully banished <@{user_id}>.\n> {reason}",
+                "user_banned_no_reason": "I've successfully banished <@{user_id}>."
+            },
+            "clear_log_channel_workflow": {
+                "logs_disabled": "I won't publish logs about moderation command usage anymore."
+            },
+            "disable_auto_ban_workflow": {
+                "auto_ban_disabled": "I won't automatically banish users anymore."
+            },
+            "disable_auto_kick_workflow": {
+                "auto_kick_disabled": "I won't automatically kick users anymore."
+            },
+            "disable_auto_mute_workflow": {
+                "auto_mute_disabled": "I won't automatically mute users anymore."
+            },
+            "disable_warn_decay_workflow": {
+                "auto_warn_disabled": "I won't automatically remove warn strikes anymore."
+            },
+            "kick_user_workflow": {
+                "cannot_kick_user_error": "I'm sorry, but I couldn't kick <@{user_id}>. Please, make sure I have the required permissions and they don't have a role ranking higher than mine. (｡•́︿•̀｡)",
+                "user_kicked_dm": "{user_name} requested I kick you from {server_name}. I'm sorry to see you go. (｡•́︿•̀｡)\n> {reason}",
+                "user_kicked_dm_no_reason": "{user_name} requested I kick you from {server_name}. I'm sorry to see you go. (｡•́︿•̀｡)",
+                "user_kicked": "I've successfully kicked <@{user_id}>.\n> {reason}",
+                "user_kicked_no_reason": "I've successfully kicked <@{user_id}>."
+            },
+            "mute_user_workflow": {
+                "cannot_mute_user_error": "I'm sorry, but I couldn't mute <@{user_id}>. Please, make sure I have the required permissions and they don't have a role ranking higher than mine. (｡•́︿•̀｡)",
+                "user_muted_dm": "{user_name} requested I mute you in {server_name}. Please, behave yourself next time. (｡•́︿•̀｡)\n> {reason}",
+                "user_muted_dm_no_reason": "{user_name} requested I mute you in {server_name}. Please, behave yourself next time. (｡•́︿•̀｡)",
+                "user_muted": "I've successfully muted <@{user_id}>.\n> {reason}",
+                "user_muted_no_reason": "I've successfully muted <@{user_id}>."
+            },
+            "set_auto_ban_workflow": {
+                "autoban_configured": "I'll automatically banish users after {warns} warn strikes."
+            },
+            "set_auto_kick_workflow": {
+                "autokick_configured": "I'll automatically kick users after {warns} warn strikes."
+            },
+            "set_auto_mute_workflow": {
+                "automute_configured": "I'll automatically mute after {warns} warn strikes."
+            },
+            "set_log_channel_workflow": {
+                "modlog_configured": "I'll publish logs about moderation command usage in <#{channel_id}>. Please, make sure you assign me the necessary permissions so I can send messages there. („• ᴗ •„)"
+            },
+            "set_warn_decay_workflow": {
+                "decay_configured": "I'll automatically remove warn strikes that are older than {decay_time}."
+            },
+            "unmute_user_workflow": {
+                "cannot_unmute_user_error": "I'm sorry, but I couldn't unmute <@{user_id}>. Please, make sure I have the required permissions and they don't have a role ranking higher than mine. (｡•́︿•̀｡)",
+                "user_unmuted_dm": "{user_name} requested I unmute you in {server_name}. („• ᴗ •„)",
+                "user_unmuted": "I've successfully unmuted <@{user_id}>."
+            },
+            "view_user_permissions_workflow": {
+                "no_moderators_error": "The server has no users with moderator permissions.",
+                "embed_title": "Permissions",
+                "embed_description": "Permissions of <@{user_id}>.",
+                "user_with_name": "{user_name} ({user_id})",
+                "user_without_name": "Unknown ({user_id})",
+                "embed_placeholder": "Choose a user",
+                "has_permission": ":white_check_mark:",
+                "not_has_permission": ":no_entry_sign:"
+            },
+            "view_warn_decay_workflow": {
+                "decay_disabled": "I don't invalidate warn strikes over time automatically.",
+                "decay_enabled": "I invalidate warn strikes after {time}."
+            },
+            "warn_user_workflow": {
+                "user_warned_dm": "{user_name} requested I warn you in {server_name}. Please, behave yourself next time. (｡•́︿•̀｡)\n> {reason}",
+                "user_warned_dm_no_reason": "{user_name} requested I warn you in {server_name}. Please, behave yourself next time. (｡•́︿•̀｡)",
+                "user_warned": "I've successfully warned <@{user_id}>.\n> {reason}",
+                "user_warned_no_reason": "I've successfully warned <@{user_id}>."
+            }
+        },
+        "reminders": {
+            "remove_reminder_workflow": {
+                "reminder_deleted": "I have removed your reminder. However, tread cautiously like a vigilant hawk, lest it eludes your memory.",
+                "reminder_not_found_error": "There exists no such reminder in your repertoire. It is akin to seeking an apple in a barren desert."
+            },
+            "set_reminder_workflow": {
+                "reminder_set": "I shall remind you at <t:{time}:f>.",
+                "message_out_of_range_error": "For the message's length ought to fall within the confines of {min} and {max} characters. Please, shorten your message and try again.",
+                "invalid_params_error": "The combination of {param1} and {param2} as parameters is not permissible. Please, try again.",
+                "too_many_reminders_error": "It appears you have gathered a veritable menagerie of reminders, reaching the limit. Like an agile wolf selecting the juiciest apple to savor, choose one to remove and try anew.",
+                "invalid_time_input_error": "Kindly inform me of the precise moment you wish for my gentle reminder.",
+                "time_input_parsing_error": "It would be truly splendid if you could kindly tell me the time in a manner that I, too, can comprehend."
+            },
+            "view_reminders_workflow": {
+                "no_reminders": "You do not have any reminders.",
+                "embed_title": "Reminders",
+                "embed_description": "Reminders of <@{user_id}>.",
+                "embed_footer": "Use the reminder's number for removal.",
+                "embed_field_name": "#{reminder_id}",
+                "embed_field_value": "> Message: {message}\n> Next trigger: <t:{time}:f>\n> Repeats: {repeats}"
+            },
+            "reminder_processor": {
+                "reminder_dm": "Behold, <@{user_id}>! Your reminder is beckoning your attention at its destined hour.\n> {message}",
+                "reminder_dm_no_message": "Behold, <@{user_id}>! Your reminder is beckoning your attention at its destined hour... can you recall the subject, though?",
+                "reminder_dm_belated": "<@{user_id}>, albeit late, your reminder is beckoning your attention:\n> {message}\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness.",
+                "reminder_dm_belated_no_message": "<@{user_id}>, albeit late, your reminder is beckoning your attention... can you recall the subject, though?\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness."
+            }
+        },
+        "server": {
+            "view_server_banner_workflow": {
+                "no_server_banner": "I'm sorry, but this server doesn't have a banner. (｡•́︿•̀｡)",
+                "embed_title": "{name}'s banner"
+            },
+            "view_server_icon_workflow": {
+                "no_server_icon": "I'm sorry, but this server doesn't have an icon. (｡•́︿•̀｡)",
+                "embed_title": "{name}'s icon"
+            }
+        },
+        "steam": {
+            "steam_api_error": "I'm sorry, but a Steam internal error has occurred. Please, try again a bit later; or, if the problem persists, report the issue (see `/info`). Thank you! („• ᴗ •„)",
+            "search_app_workflow": {
+                "no_results": "I couldn't find any good results for you. Please, refine your keywords and try again. („• ᴗ •„)"
+            }
+        },
+        "todo_lists": {
+            "add_todo_item_workflow": {
+                "item_added": "I've added the item to your to-do list. If you'd like, you may remove this to-do item later using the identifier {todo_item_id} or by removing it now. Make sure you don't forget to do it! („• ᴗ •„)",
+                "message_too_long_error": "I'm sorry, but I'm afraid your message is a bit too short or long. Please, make sure the length is between {lower_bound} and {upper_bound} characters. (｡•́︿•̀｡)",
+                "list_full_error": "I'm sorry, but your to-do list is full. I think it's about time to get a few things done. („• ᴗ •„)"
+            },
+            "remove_all_todo_items_workflow": {
+                "items_deleted": "I've removed all {count} of your to-do items. Make sure you don't slack, though. („• ᴗ •„)",
+                "no_todo_items_error": "There's nothing to remove. It's time to add a to-do item and then get to work. („• ᴗ •„)"
+            },
+            "remove_todo_item_workflow": {
+                "item_deleted": "I've removed the to-do item. Make sure you don't slack, though. („• ᴗ •„)",
+                "no_todo_item_error": "I'm sorry, but I couldn't find such a to-do item in your list. It may have been removed already. (｡•́︿•̀｡)"
+            },
+            "view_todo_items_workflow": {
+                "no_todo_items": "You don't have any to-do items.",
+                "embed_title": "To-do list",
+                "embed_description": "To-do items of <@{user_id}>.",
+                "embed_footer": "Use the to-do item's number for removal.",
+                "embed_field": "#{item_id}"
+            }
+        },
+        "weather": {
+            "get_basic_weather_workflow": {
+                "wind_directions": {
+                    "north": "N",
+                    "northeast": "NE",
+                    "east": "E",
+                    "southeast": "SE",
+                    "south": "S",
+                    "southwest": "SW",
+                    "west": "W",
+                    "northwest": "NW"
+                },
+                "no_information_error": "I'm sorry, but OpenWeather couldn't provide any information right now. Please, try again a bit later. (｡•́︿•̀｡)",
+                "invalid_location_error": "I'm sorry, but I cannot find the location you requested. Please, double check for any typos or try a larger town nearby. (｡•́︿•̀｡)",
+                "openweather_error": "I'm sorry, but an OpenWeather internal error has occurred (code: {code}). Please, try again a bit later; or, if the problem persists, report the issue (see `/info`). Thank you! („• ᴗ •„)",
+                "embed_title": "Weather report",
+                "embed_description": "Information about the current weather in {location}.",
+                "embed_footer": "Powered by OpenWeather",
+                "embed_field_temperature": "Temperature",
+                "embed_field_temperature_value": "{temperature} °C / {temperature_fahrenheit} °F",
+                "embed_field_temperature_feels": "Feels like",
+                "embed_field_temperature_feels_value": "{temperature} °C / {temperature_fahrenheit} °F",
+                "embed_field_humidity": "Humidity",
+                "embed_field_humidity_value": "{humidity}%",
+                "embed_field_cloudiness": "Cloudiness",
+                "embed_field_cloudiness_value": "{cloudiness}%",
+                "embed_field_condition": "Condition",
+                "embed_field_condition_value": "{description}",
+                "embed_field_wind": "Wind",
+                "embed_field_wind_value": "{speed} m/s ({direction})",
+                "embed_field_wind_no_degrees_value": "{speed} m/s",
+                "map_button": "Map"
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+& dotnet run --project ./src/Holo.Migrator/Holo.Migrator.csproj --launch-profile UpdateDatabase

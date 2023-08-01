@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{667D7844-0A9F-4F2F-B5A5-3018BA21E77D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holo.ServiceHost", "src\Holo.ServiceHost\Holo.ServiceHost.csproj", "{449DC076-94D2-4068-ABCC-09F3DE5BB2A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holo.Sdk", "src\Holo.Sdk\Holo.Sdk.csproj", "{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holo.Module.General", "src\Holo.Module.General\Holo.Module.General.csproj", "{C9E62468-A977-48C4-93FE-44861B173577}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holo.Migrator", "src\Holo.Migrator\Holo.Migrator.csproj", "{D714142D-E525-4F3B-A51E-2233A70D9237}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holo.Module.General.Migrations", "src\Holo.Module.General.Migrations\Holo.Module.General.Migrations.csproj", "{934791A0-6EA1-4ECA-B344-D6CD5765F7DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{449DC076-94D2-4068-ABCC-09F3DE5BB2A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449DC076-94D2-4068-ABCC-09F3DE5BB2A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449DC076-94D2-4068-ABCC-09F3DE5BB2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449DC076-94D2-4068-ABCC-09F3DE5BB2A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9E62468-A977-48C4-93FE-44861B173577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9E62468-A977-48C4-93FE-44861B173577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9E62468-A977-48C4-93FE-44861B173577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9E62468-A977-48C4-93FE-44861B173577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D714142D-E525-4F3B-A51E-2233A70D9237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D714142D-E525-4F3B-A51E-2233A70D9237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D714142D-E525-4F3B-A51E-2233A70D9237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D714142D-E525-4F3B-A51E-2233A70D9237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{934791A0-6EA1-4ECA-B344-D6CD5765F7DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{934791A0-6EA1-4ECA-B344-D6CD5765F7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{934791A0-6EA1-4ECA-B344-D6CD5765F7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{934791A0-6EA1-4ECA-B344-D6CD5765F7DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{449DC076-94D2-4068-ABCC-09F3DE5BB2A1} = {667D7844-0A9F-4F2F-B5A5-3018BA21E77D}
+		{40AFA70F-B2F4-44E6-9DD7-67FD996C52E1} = {667D7844-0A9F-4F2F-B5A5-3018BA21E77D}
+		{C9E62468-A977-48C4-93FE-44861B173577} = {667D7844-0A9F-4F2F-B5A5-3018BA21E77D}
+		{D714142D-E525-4F3B-A51E-2233A70D9237} = {667D7844-0A9F-4F2F-B5A5-3018BA21E77D}
+		{934791A0-6EA1-4ECA-B344-D6CD5765F7DC} = {667D7844-0A9F-4F2F-B5A5-3018BA21E77D}
+	EndGlobalSection
+EndGlobal

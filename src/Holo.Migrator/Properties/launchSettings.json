@@ -1,0 +1,9 @@
+{
+    "profiles": {
+        "UpdateDatabase": {
+            "commandName": "Project",
+            "dotnetRunMessage": true,
+            "commandLineArgs": "update-database -c Host=localhost;Database=holobot;Username=postgres;Password=password -a \"./src/Holo.Module.*.Migrations/bin/Debug/net7.0/Holo.Module.*.Migrations.dll\""
+        }
+    }
+}
