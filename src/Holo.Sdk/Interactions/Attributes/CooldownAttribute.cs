@@ -6,20 +6,40 @@ using Discord.Interactions;
 
 namespace Holo.Sdk.Interactions.Attributes;
 
+/// <summary>
+/// Used for interactions that impose a cooldown between consecutive invocations.
+/// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class CooldownAttribute : PreconditionAttribute
 {
     private readonly ConcurrentDictionary<ulong, CooldownInfo> Cooldowns = new();
 
+    /// <summary>
+    /// Gets the duration of the cooldown.
+    /// </summary>
     public TimeSpan Duration { get; }
 
-    public int Uses { get; }
+    /// <summary>
+    /// Gets the number of uses allowed before the cooldown expires.
+    /// </summary>
+    public uint Uses { get; }
 
+    /// <summary>
+    /// Gets the guild permissions a user must have to avoid the cooldown.
+    /// </summary>
     public GuildPermission? IgnoreGuildPermissions { get; init; }
 
+    /// <summary>
+    /// Gets the key of the localization resource returned during a precondition failure.
+    /// </summary>
     public string LocalizationKey { get; init; } = "Interactions.CooldownError";
 
-    public CooldownAttribute(uint duration, int uses = 1)
+    /// <summary>
+    /// Initializes a new instance of <see cref="CooldownAttribute"/>.
+    /// </summary>
+    /// <param name="duration">The duration of the cooldown, in seconds.</param>
+    /// <param name="uses">The number of uses allowed before the cooldown expires.</param>
+    public CooldownAttribute(uint duration, uint uses = 1)
     {
         if (uses < 1)
             throw new ArgumentOutOfRangeException(
@@ -31,6 +51,7 @@ public sealed class CooldownAttribute : PreconditionAttribute
         Uses = uses;
     }
 
+    /// <inheritdoc cref="PreconditionAttribute.CheckRequirementsAsync(IInteractionContext, ICommandInfo, IServiceProvider)"/>
     public override Task<PreconditionResult> CheckRequirementsAsync(
         IInteractionContext context,
         ICommandInfo commandInfo,

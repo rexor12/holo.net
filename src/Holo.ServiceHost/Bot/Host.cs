@@ -219,6 +219,6 @@ public sealed class Host
             await TaskHelper.TryAwaitAsync(m => m.StopAsync(), logger, module);
 
         foreach (var startable in startables)
-            await TaskHelper.TryAwaitAsync(s => s.Item1.StartAsync(s.Item2), logger, (startable, cancellationToken));
+            await TaskHelper.TryAwaitAsync(s => s.StopAsync(), logger, startable);
     }
 }

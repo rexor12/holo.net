@@ -1,0 +1,12 @@
+# .Net artifacts
+**/bin/
+**/obj/
+
+# Tests
+**/test/
+
+# Secrets
+secrets
+
+# VSCode artifacts
+.vscode

@@ -16,17 +16,21 @@ public abstract class AggregateRoot<TIdentifier> : IEquatable<AggregateRoot<TIde
     /// <inheritdoc cref="object.Equals(object?)"/>
     public override bool Equals(object? other)
     {
+        if (ReferenceEquals(this, other))
+            return true;
         if (other is null)
             return false;
-        if (other.GetType() != GetType())
+        if (other is not AggregateRoot<TIdentifier> typedOther)
             return false;
 
-        return Equals((AggregateRoot<TIdentifier>)other);
+        return Equals(typedOther);
     }
 
     /// <inheritdoc cref="IEquatable{T}.Equals(T?)"/>
     public bool Equals(AggregateRoot<TIdentifier>? other)
     {
+        if (ReferenceEquals(this, other))
+            return true;
         if (other is null)
             return false;
 

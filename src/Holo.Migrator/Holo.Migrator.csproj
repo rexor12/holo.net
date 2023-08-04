@@ -21,4 +21,16 @@
     <ProjectReference Include="..\Holo.Sdk\Holo.Sdk.csproj" />
   </ItemGroup>
 
+  <Target Name="CopyToPublishFolder" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+      <Message Text="Copying migrator..." Importance="High" />
+      <ItemGroup>
+          <_CopyItems Include="$(TargetDir)\*.*" />
+      </ItemGroup>
+
+      <Copy
+          SourceFiles="@(_CopyItems)"
+          DestinationFolder="$(HoloPublishFolder)$(ProjectName)" />
+      <Message Text="Successfully copied migrator" Importance="High" />
+  </Target>
+
 </Project>

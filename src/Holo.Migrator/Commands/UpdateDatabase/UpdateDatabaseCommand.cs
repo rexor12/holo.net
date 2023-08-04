@@ -17,6 +17,8 @@ public sealed class UpdateDatabaseCommand : CommandBase<UpdateDatabaseOptions>
         var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
         runner.MigrateUp();
 
+        Console.WriteLine("Successfully finished the migration process");
+
         return Task.CompletedTask;
     }
 

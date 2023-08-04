@@ -1,0 +1,15 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Target Name="CopyToPublishFolder" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+        <Message Text="Copying modules..." Importance="High" />
+        <ItemGroup>
+            <_CopyItems Include="$(TargetDir)/**/*" />
+        </ItemGroup>
+
+        <Copy
+            SourceFiles="@(_CopyItems)"
+            DestinationFolder="$(HoloPublishFolder)Holo.ServiceHost/Modules/$(ProjectName)/%(RecursiveDir)" />
+        <Message Text="Successfully copied modules" Importance="High" />
+    </Target>
+
+</Project>

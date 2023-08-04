@@ -35,4 +35,16 @@
     <None Update="Data\Resources\Localization.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <Target Name="CopyToPublishFolder" AfterTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+      <Message Text="Copying service host..." Importance="High" />
+      <ItemGroup>
+          <_CopyItems Include="$(TargetDir)/**/*" />
+      </ItemGroup>
+
+      <Copy
+          SourceFiles="@(_CopyItems)"
+          DestinationFolder="$(HoloPublishFolder)$(ProjectName)/%(RecursiveDir)" />
+      <Message Text="Successfully copied service host" Importance="High" />
+  </Target>
+
 </Project>
