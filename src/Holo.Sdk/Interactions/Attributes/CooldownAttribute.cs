@@ -9,10 +9,10 @@ namespace Holo.Sdk.Interactions.Attributes;
 /// <summary>
 /// Used for interactions that impose a cooldown between consecutive invocations.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class CooldownAttribute : PreconditionAttribute
 {
-    private readonly ConcurrentDictionary<ulong, CooldownInfo> Cooldowns = new();
+    private readonly ConcurrentDictionary<ulong, CooldownInfo> _cooldowns = new();
 
     /// <summary>
     /// Gets the duration of the cooldown.
@@ -63,7 +63,7 @@ public sealed class CooldownAttribute : PreconditionAttribute
             && guildUser.GuildPermissions.Has(IgnoreGuildPermissions.Value))
             return Task.FromResult(PreconditionResult.FromSuccess());
 
-        var cooldownInfo = Cooldowns.GetOrAdd(context.User.Id, userId => new CooldownInfo
+        var cooldownInfo = _cooldowns.GetOrAdd(context.User.Id, userId => new CooldownInfo
         {
             UserId = context.User.Id,
             EndsAt = DateTime.UtcNow + Duration

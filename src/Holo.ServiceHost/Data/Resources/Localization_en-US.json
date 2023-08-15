@@ -5,19 +5,19 @@
     "missing_required_argument_error": "I'm sorry, but I cannot handle your request due to a missing argument: {argname}. Please, try again by specifying the argument. (｡•́︿•̀｡)",
     "server_not_found_error": "I'm sorry, but I couldn't find the requested server. Please, double check for any typos. (｡•́︿•̀｡)",
     "channel_not_found_error": "I'm sorry, but I couldn't find the requested channel. Please, double check for any typos. (｡•́︿•̀｡)",
-    "user_not_found_error": "I'm sorry, but I couldn't find the requested user. Please, double check for any typos. (｡•́︿•̀｡)",
+    "UserNotFoundError": "I'm sorry, but I couldn't find the requested user. Please, double check for any typos. (｡•́︿•̀｡)",
     "missing_dm_permission_error": "I'm sorry, but I don't have the permission to DM users. Please, kindly ask your server administrator to grant me the permission. Thank you! („• ᴗ •„)",
     "invalid_argument_error": "I'm sorry, but you invoked the command with an invalid argument. Please, double check for any typos and if you believe this is an issue with me, report it (see `/info`). Thank you! („• ᴗ •„)",
     "database_serialization_error": "I'm sorry, but an error has occurred while processing your request. Please, try again and if the issue persists, report it (see `/info`). Thank you! („• ᴗ •„)",
     "Interactions": {
         "halted_interaction_error": "You are forbidden from using this command, akin to a restless wolf barred from its hunting grounds.",
-        "invalid_interaction_data_error": "Unfortunately, your interaction has been misguided. It may have expired.",
-        "invalid_interaction_error": "Unfortunately, your interaction has been misguided. The associated command may have become unavailable.",
+        "InvalidInteractionDataError": "Unfortunately, your interaction has been misguided. It may have expired.",
+        "InvalidInteractionError": "Unfortunately, your interaction has been misguided. My memory is hazy about this spell.",
         "server_only_interaction_error": "Alas, I cannot perform your request in the current location. Try it in a server.",
-        "unbound_interaction_user_error": "Pray, refrain from laying claim to what is not rightfully yours, as the owner guards it with a watchful eye.",
-        "unhandled_interaction_error": "Pray forgive me, something unexpected has interrupted my hunt. I have notified my master about this mishap.",
+        "BoundInteractionUserError": "Pray, refrain from laying claim to what is not rightfully yours, as the owner guards it with a watchful eye.",
+        "UnhandledInteractionError": "Pray forgive me, something unexpected has interrupted my hunt. I have notified my master about this mishap.",
         "not_available_for_server_error": "I'm sorry, but this command isn't available for your server. (｡•́︿•̀｡)",
-        "CooldownError": "Your enthusiasm is duly noted, but pray, grant me a moment's respite. ({SecondsLeft:#,#} seconds)",
+        "CooldownError": "Your enthusiasm is duly noted, but pray, grant me a moment's respite. ({SecondsLeft:0.0} seconds)",
         "interaction_context_not_supported_error": "Alas, I cannot perform your request in the current location."
     },
     "common": {
@@ -103,10 +103,10 @@
                 "NoCookiesError": "I'm sorry, but I don't have any fortune cookies right now. (｡•́︿•̀｡)",
                 "EmbedTitle": "Fortune Cookie",
                 "EmbedFooter": "Cookie #{Id}",
-                "CooldownError": "Alas, it appears I have eaten all the cookies. I would kindly ask that you attempt to take one a bit later. ({SecondsLeft:#,#} seconds)"
+                "CooldownError": "Alas, it appears I have eaten all the cookies. I would kindly ask that you attempt to take one a bit later. ({SecondsLeft:0.0} seconds)"
             },
-            "magic_eight_ball_workflow": {
-                "responses": [
+            "MagicEightBall": {
+                "Responses": [
                     "Yes.",
                     "But of course!",
                     "Certainly.",
@@ -124,8 +124,8 @@
                     "That's not your cup of tea.",
                     "Who knows..."
                 ],
-                "response_message": "> {question}\n\n{answer}",
-                "cooldown_error": "The ball, akin to a treasured relic, is currently in the midst of its well-deserved respite. ({seconds_left:,.0f} seconds)"
+                "ResponseMessage": "> {Question}\n\n{Answer}",
+                "CooldownError": "The ball, akin to a treasured relic, is currently in the midst of its well-deserved respite. ({SecondsLeft:0.0} seconds)"
             },
             "marry_workflow": {
                 "already_married": "You are already married to <@{spouse_id}>. You wouldn't want to cheat on them now, would you?",
@@ -252,34 +252,39 @@
                     "wink_target": "<@{user_id}> winks at <@{target_user_id}>."
                 }
             },
-            "roll_number_workflow": {
-                "unusual_roll_result": "I rolled an unusually shaped die for you and got {value}. („• ᴗ •„)",
-                "usual_roll_result": "I rolled a {name} for you and got {value}. („• ᴗ •„)",
-                "die_1": "Möbius strip",
-                "die_4": "tetrahedron",
-                "die_6": "cube",
-                "die_8": "octahedron",
-                "die_10": "pentagonal trapezohedron",
-                "die_12": "dodecahedron",
-                "die_20": "icosahedron",
-                "die_24": "pseudo-deltoidal icositetrahedron",
-                "die_50": "icosikaipentagonal trapezohedron",
-                "die_120": "disdyakis triacontahedron"
+            "RollDie": {
+                "EmbedTitle": "Rolled a die!",
+                "UnusualRollResult": "I rolled an unusually shaped die for you and got {Value}. („• ᴗ •„)",
+                "UsualRollResult": "I rolled a {Name} for you and got {Value}. („• ᴗ •„)",
+                "Die1": "Möbius strip",
+                "Die4": "tetrahedron",
+                "Die6": "cube",
+                "Die8": "octahedron",
+                "Die10": "pentagonal trapezohedron",
+                "Die12": "dodecahedron",
+                "Die20": "icosahedron",
+                "Die24": "pseudo-deltoidal icositetrahedron",
+                "Die50": "icosikaipentagonal trapezohedron",
+                "Die120": "disdyakis triacontahedron",
+                "CooldownError": "Let the dice rest for a bit. ({SecondsLeft:0.0} seconds)"
             },
-            "summon_user_workflow": {
-                "self_summon": "And thus, be summoned, <@{user_id}>! („• ᴗ •„)",
-                "dm_summon_with_message": "{user_name} requests your presence at <#{channel_id}>:\n> {message}",
-                "dm_summon": "{user_name} requests your presence at <#{channel_id}>.",
-                "successful_summon": "I'll be back in a moment with <@{user_id}>...",
-                "cannot_summon_bot_error": "I'm sorry, but I'd rather not disturb a fellow bot. (｡•́︿•̀｡)"
+            "SummonUser": {
+                "SelfSummon": "And thus, be summoned, <@{UserId}>! („• ᴗ •„)",
+                "DmSummonWithMessage": "{UserName} requests your presence at <#{ChannelId}>:\n> {Message}",
+                "DmSummon": "{UserName} requests your presence at <#{ChannelId}>.",
+                "SuccessfulSummon": "I'll be back in a moment with <@{UserId}>...",
+                "CannotSummonBotError": "I'm sorry, but I'd rather not disturb a fellow bot. (｡•́︿•̀｡)",
+                "CannotSummonSelfError": "Silly, I'm always here for you. („• ᴗ •„)",
+                "CannotDmError": "<@{UserId}, I tried to summon you, but the ritual ended in failure.",
+                "CooldownError": "Allow me some time to recharge the magical runes. ({SecondsLeft:0.0} seconds)"
             },
-            "view_bot_info_workflow": {
-                "embed_title": "Holo's information",
-                "embed_footer": "Brought to you by rexor12",
-                "general_value": "Version: _{version}_\nLatency: _{latency:,.2f} ms_\nServers: _{servers}_\nTime: _{server_time:%I:%M:%S %p, %m/%d/%Y %Z}_",
-                "project_home": "Project home",
-                "report_bug": "Report a bug",
-                "request_feature": "Request a feature"
+            "ViewBotInfo": {
+                "EmbedTitle": "Holo's information",
+                "EmbedFooter": "Brought to you by rexor12",
+                "GeneralValue": "Version: _{Version}_\nLatency: _{Latency} ms_\nServers: _{Servers}_\nTime: _{ServerTime:yyyy/MM/dd HH:mm:ss zzz}_",
+                "ProjectHome": "Project home",
+                "ReportBug": "Report a bug",
+                "RequestFeature": "Request a feature"
             },
             "view_emoji_workflow": {
                 "emoji_not_found_error": "I'm sorry, but I couldn't find the emoji you requested. Please, double check for any typos. (｡•́︿•̀｡)",
@@ -313,17 +318,17 @@
                 "age_top3_descriptor": "❤️ **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>",
                 "age_other_descriptor": "{rank}. **{user_name1}** x **{user_name2}** • Married <t:{married_at}:R>"
             },
-            "view_user_avatar_workflow": {
-                "embed_footer": "Artwork by {artist}",
-                "embed_title_global": "{user}'s global avatar",
-                "embed_title_server": "{user}'s server specific avatar",
-                "no_avatar_error": "I'm sorry, but <@{user_id}> doesn't have an avatar. (｡•́︿•̀｡)",
-                "global_button": "Global",
-                "server_button": "Server"
+            "ViewUserAvatar": {
+                "EmbedFooter": "Artwork by {Artist}",
+                "EmbedTitleGlobal": "{User}'s global avatar",
+                "EmbedTitleServer": "{User}'s server specific avatar",
+                "NoAvatarError": "<@{UserId}> avoids to hide has face behind a mask.",
+                "GlobalButton": "Global",
+                "ServerButton": "Server"
             },
-            "view_user_banner_workflow": {
-                "embed_title": "{user}'s banner",
-                "no_banner_error": "I'm sorry, but <@{user_id}> doesn't have a banner. (｡•́︿•̀｡)"
+            "ViewUserBanner": {
+                "EmbedTitle": "{User}'s banner",
+                "NoBannerError": "<@{UserId}> hasn't designed his family banner, yet."
             }
         },
         "giveaways": {
@@ -507,6 +512,9 @@
                 "reminder_dm_belated": "<@{user_id}>, albeit late, your reminder is beckoning your attention:\n> {message}\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness.",
                 "reminder_dm_belated_no_message": "<@{user_id}>, albeit late, your reminder is beckoning your attention... can you recall the subject, though?\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness."
             }
+        },
+        "Say": {
+            "CooldownError": "Pray, give me a moment's respite to catch my breath. ({SecondsLeft:0.0} seconds)"
         },
         "server": {
             "view_server_banner_workflow": {

@@ -14,7 +14,6 @@ namespace Holo.Module.General.Cookies.Interactions;
 public sealed class GetRandomCookieInteraction : InteractionGroupBase
 {
     private readonly IFortuneCookieRepository _fortuneCookieRepository;
-    private readonly ILogger<GetRandomCookieInteraction> _logger;
     private readonly IOptions<FortuneCookieOptions> _options;
 
     public GetRandomCookieInteraction(
@@ -25,7 +24,6 @@ public sealed class GetRandomCookieInteraction : InteractionGroupBase
         : base(localizationService, logger)
     {
         _fortuneCookieRepository = fortuneCookieRepository;
-        _logger = logger;
         _options = options;
     }
 

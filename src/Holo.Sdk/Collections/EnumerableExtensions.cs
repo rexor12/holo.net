@@ -40,4 +40,12 @@ public static class EnumerableExtensions
 
         return result.ToDictionary(keySelector, valueSelector);
     }
+
+    /// <summary>
+    /// Projects each element of a sequence into the element paired with its index.
+    /// </summary>
+    /// <param name="source">The <see cref="IEnumerable{T}"/> to enumerate.</param>
+    /// <typeparam name="TSource">The type of the enumerable's elements.</typeparam>
+    public static IEnumerable<(TSource Entry, int Index)> WithIndex<TSource>(this IEnumerable<TSource> source)
+        => source.Select((item, index) => (item, index));
 }

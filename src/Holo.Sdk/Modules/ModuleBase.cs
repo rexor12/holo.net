@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac;
 using Holo.Sdk.Configurations;
 
@@ -14,14 +12,6 @@ public abstract class ModuleBase : IModule
     public void Configure(ContainerBuilder containerBuilder, IConfigurationProvider configurationProvider)
         => OnConfigure(containerBuilder, configurationProvider);
 
-    /// <inheritdoc cref="IModule.StartAsync(CancellationToken)"/>
-    public Task StartAsync(CancellationToken cancellationToken)
-        => OnStartAsync(cancellationToken);
-
-    /// <inheritdoc cref="IModule.StopAsync"/>
-    public Task StopAsync()
-        => OnStopAsync();
-
     /// <summary>
     /// Invoked when the module needs to be configured. This happens only once.
     /// The default implementation does nothing.
@@ -33,10 +23,4 @@ public abstract class ModuleBase : IModule
     protected virtual void OnConfigure(ContainerBuilder containerBuilder, IConfigurationProvider configurationProvider)
     {
     }
-
-    protected virtual Task OnStartAsync(CancellationToken cancellationToken)
-        => Task.CompletedTask;
-
-    protected virtual Task OnStopAsync()
-        => Task.CompletedTask;
 }

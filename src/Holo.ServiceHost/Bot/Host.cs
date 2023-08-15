@@ -40,7 +40,9 @@ public sealed class Host
 
     private static readonly InteractionServiceConfig InteractionServiceConfig = new()
     {
-        DefaultRunMode = RunMode.Async
+        DefaultRunMode = RunMode.Async,
+        UseCompiledLambda = true,
+        AutoServiceScopes = false
     };
 
     /// <summary>
@@ -79,11 +81,10 @@ public sealed class Host
     public async Task<Task> StartAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<Host>>();
-        var modules = serviceProvider.GetServices<IModule>();
         var startables = serviceProvider.GetServices<IStartable>();
-        var client = await StartClientAsync(serviceProvider, modules, startables, logger, cancellationToken);
+        var client = await StartClientAsync(serviceProvider, startables, logger, cancellationToken);
 
-        return ShutdownLaterAsync(client, modules, startables, logger, cancellationToken);
+        return ShutdownLaterAsync(client, startables, logger, cancellationToken);
     }
 
     private static void RegisterServices(ContainerBuilder containerBuilder, Assembly assembly)
@@ -136,6 +137,7 @@ public sealed class Host
         foreach (var descriptor in moduleDescriptors)
         {
             containerBuilder.RegisterInstance(descriptor).As<ModuleDescriptor>();
+            descriptor.Module.Configure(containerBuilder, configurationProvider);
             RegisterServices(containerBuilder, descriptor.Assembly);
             RegisterDbContexts(serviceCollection, configurationProvider, descriptor.Assembly);
         }
@@ -171,7 +173,6 @@ public sealed class Host
 
     private static async Task<DiscordSocketClient> StartClientAsync(
         IServiceProvider serviceProvider,
-        IEnumerable<IModule> modules,
         IEnumerable<IStartable> startables,
         ILogger logger,
         CancellationToken cancellationToken)
@@ -183,14 +184,6 @@ public sealed class Host
         foreach (var startable in startables)
             await startable.StartAsync(cancellationToken);
 
-        foreach (var module in modules)
-        {
-            var moduleName = module.GetType().Name;
-            logger.LogDebug("Starting module '{ModuleName}'...", moduleName);
-            await module.StartAsync(cancellationToken);
-            logger.LogInformation("Successfully started module '{ModuleName}'", moduleName);
-        }
-
         await serviceProvider.GetRequiredService<InteractionHandler>().InitializeAsync();
         await client.LoginAsync(TokenType.Bot, options.Value.BotToken);
         await client.StartAsync();
@@ -200,7 +193,6 @@ public sealed class Host
 
     private static async Task ShutdownLaterAsync(
         DiscordSocketClient client,
-        IEnumerable<IModule> modules,
         IEnumerable<IStartable> startables,
         ILogger logger,
         CancellationToken cancellationToken)
@@ -214,9 +206,6 @@ public sealed class Host
             typeof(OperationCanceledException));
 
         await TaskHelper.TryAwaitAsync(c => c.DisposeAsync(), logger, client);
-
-        foreach (var module in modules)
-            await TaskHelper.TryAwaitAsync(m => m.StopAsync(), logger, module);
 
         foreach (var startable in startables)
             await TaskHelper.TryAwaitAsync(s => s.StopAsync(), logger, startable);

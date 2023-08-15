@@ -31,4 +31,11 @@ public interface ILocalizationService
     /// <param name="arguments">An optional list of arguments.</param>
     /// <returns>The localized text.</returns>
     string Localize(string key, int itemIndex, params (string Name, object? Value)[]? arguments);
+
+    /// <summary>
+    /// Gets the list of localized items with the given key.
+    /// </summary>
+    /// <param name="key">The key of the resource.</param>
+    /// <returns>The list of localized items.</returns>
+    IReadOnlyList<string> GetList(string key);
 }

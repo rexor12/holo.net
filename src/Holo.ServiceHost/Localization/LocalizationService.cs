@@ -87,6 +87,17 @@ public sealed class LocalizationService : ILocalizationService, IStartable
     public string Localize(string key, int itemIndex, params (string Name, object? Value)[]? arguments)
         => InternalLocalize(key, itemIndex, arguments);
 
+    /// <inheritdoc cref="ILocalizationService.GetList(string)"/>
+    public IReadOnlyList<string> GetList(string key)
+    {
+        // TODO Ambient request context -> culture code.
+        if (!_defaultLocalization.TryGetValue(key, out var valueHolder)
+            || valueHolder is not TemplateStringArray array)
+            return Array.Empty<string>();
+
+        return array.Value.Select(i => i.Value).ToArray();
+    }
+
     private static IEnumerable<FileDescriptor> GetLocalizationFiles(ResourceOptions options)
     {
         var rootDirectory = new DirectoryInfo(Environment.CurrentDirectory);

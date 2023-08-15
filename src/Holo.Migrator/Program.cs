@@ -41,8 +41,7 @@ public sealed class Program
 
         try
         {
-            var command = Activator.CreateInstance(commandType) as ICommand;
-            if (command is null)
+            if (Activator.CreateInstance(commandType) is not ICommand command)
                 throw new InvalidOperationException($"Failed to instantiate the command of type '{commandType}'.");
 
             command.ExecuteAsync(options).Wait();

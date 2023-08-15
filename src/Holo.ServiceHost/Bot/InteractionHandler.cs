@@ -55,17 +55,26 @@ public sealed class InteractionHandler
     public async Task InitializeAsync()
     {
         _client.Ready += ReadyAsync;
-        _interactionService.Log += message => _logger.LogAsync(message);
-        _interactionService.SlashCommandExecuted += OnSlashCommandExecutedAsync;
+        _client.InteractionCreated += ExecuteInteractionAsync;
+        _client.Log += message => _logger.LogAsync(message);
+        // _interactionService.Log += message => _logger.LogAsync(message);
+        _interactionService.InteractionExecuted += OnInteractionExecutedAsync;
 
         var interactionModuleTypes = _moduleDescriptors.SelectMany(descriptor => descriptor.Assembly.GetInteractionGroups());
         foreach (var interactionModuleType in interactionModuleTypes)
             await _interactionService.AddModuleAsync(interactionModuleType, _serviceProvider);
-
-        _client.InteractionCreated += interaction => _interactionService.ExecuteCommandAsync(
-            new SocketInteractionContext(_client, interaction),
-            _serviceProvider);
     }
+
+    private static string GetCommandId(IDiscordInteractionData interactionData)
+        => interactionData switch
+        {
+            SocketSlashCommandData data => data.Name,
+            SocketMessageComponentData data => data.CustomId,
+            SocketMessageCommandData data => data.Name,
+            SocketUserCommandData data => data.Name,
+            SocketAutocompleteInteractionData data => data.CommandName,
+            _ => "<unknown>"
+        };
 
     private async Task ReadyAsync()
     {
@@ -75,20 +84,68 @@ public sealed class InteractionHandler
             await _interactionService.RegisterCommandsGloballyAsync(true);
     }
 
-    private Task OnSlashCommandExecutedAsync(
-        SlashCommandInfo commandInfo,
-        IInteractionContext context,
-        IResult result)
+    private Task ExecuteInteractionAsync(SocketInteraction interaction)
+    {
+        if (interaction is SocketMessageComponent componentInteraction)
+            return ExecuteComponentInteractionAsync(componentInteraction);
+
+        return _interactionService.ExecuteCommandAsync(
+            new ExtendedInteractionContext(_client, interaction),
+            _serviceProvider);
+    }
+
+    private Task ExecuteComponentInteractionAsync(SocketMessageComponent interaction)
+    {
+        if (!ComponentHelper.TryParseCustomId(interaction.Data.CustomId, out var componentInfo))
+        {
+            return interaction.RespondAsync(
+                _localizationService.Localize("Interactions.InvalidInteractionError"),
+                ephemeral: true);
+        }
+
+        return _interactionService.ExecuteCommandAsync(
+            new ExtendedInteractionContext(_client, interaction)
+            {
+                ComponentInfo = componentInfo
+            },
+            _serviceProvider);
+    }
+
+    private Task OnInteractionExecutedAsync(ICommandInfo commandInfo, IInteractionContext context, IResult result)
+        => TryHandleResultAsync(context.Interaction, result);
+
+    private async Task<bool> TryHandleResultAsync(IDiscordInteraction interaction, IResult result)
     {
         if (result.IsSuccess)
-            return Task.CompletedTask;
+            return true;
 
-        return result switch
+        switch (result)
         {
-            LocalizedPreconditionResult r => context.Interaction.RespondAsync(
-                _localizationService.Localize(r.LocalizationKey, r.LocalizationArguments),
-                ephemeral: true),
-            _ => Task.CompletedTask
-        };
+            case LocalizedPreconditionResult r:
+                _logger.LogDebug(
+                    "A precondition error occurred during the execution of the command '{CommandId}': {ErrorMessage}",
+                    GetCommandId(interaction.Data),
+                    result.ErrorReason);
+
+                if (!interaction.HasResponded)
+                    await interaction.RespondAsync(
+                        _localizationService.Localize(r.LocalizationKey, r.LocalizationArguments),
+                        ephemeral: true);
+
+                return true;
+
+            default:
+                _logger.LogError(
+                    "An unhandled error occurred during the execution of the command '{CommandId}': {ErrorMessage}",
+                    GetCommandId(interaction.Data),
+                    result.ErrorReason);
+
+                if (!interaction.HasResponded)
+                    await interaction.RespondAsync(
+                        _localizationService.Localize("Interactions.UnhandledInteractionError"),
+                        ephemeral: true);
+
+                return true;
+        }
     }
 }

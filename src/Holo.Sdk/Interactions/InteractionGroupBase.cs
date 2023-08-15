@@ -7,7 +7,7 @@ namespace Holo.Sdk.Interactions;
 /// <summary>
 /// Abstract base class for an interaction group.
 /// </summary>
-public abstract class InteractionGroupBase : InteractionModuleBase<SocketInteractionContext>, IInteractionGroup
+public abstract class InteractionGroupBase : InteractionModuleBase<ExtendedInteractionContext>, IInteractionGroup
 {
     protected ILocalizationService LocalizationService { get; }
     protected ILogger Logger { get; }
