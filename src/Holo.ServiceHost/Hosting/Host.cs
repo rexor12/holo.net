@@ -14,6 +14,7 @@ using Holo.Sdk.Logging;
 using Holo.Sdk.Modules;
 using Holo.Sdk.Storage;
 using Holo.Sdk.Tasks;
+using Holo.ServiceHost.Bot;
 using Holo.ServiceHost.Configurations;
 using Holo.ServiceHost.Modules;
 using Holo.ServiceHost.Reflection;
@@ -26,7 +27,7 @@ using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using IStartable = Holo.Sdk.Lifecycle.IStartable;
 
-namespace Holo.ServiceHost.Bot;
+namespace Holo.ServiceHost.Hosting;
 
 /// <summary>
 /// Responsible for hosting a Discord client.
@@ -46,30 +47,76 @@ public sealed class Host
     };
 
     /// <summary>
-    /// Configures the dependency injection container.
+    /// Creates a <see cref="ConfigurationContext"/> to be shared between the configuration phases.
     /// </summary>
-    /// <param name="containerBuilder">The <see cref="ContainerBuilder"/>.</param>
-    /// <param name="serviceCollection">The <see cref="IServiceCollection"/>.</param>
     /// <param name="environmentName">The name of the currently active application environment.</param>
-    public void Configure(
-        ContainerBuilder containerBuilder,
-        IServiceCollection serviceCollection,
-        string environmentName)
+    /// <returns>
+    /// A new instance of <see cref="ConfigurationContext"/> to be shared between the configuration phases.
+    /// </returns>
+    public ConfigurationContext BuildContext(string environmentName)
     {
         var configurationProvider = ConfigurationProvider.Create(environmentName);
-        containerBuilder.RegisterInstance(configurationProvider).As<IConfigurationProvider>();
+        var moduleAssemblyGlobPatterns = configurationProvider
+            .GetSection("ModuleOptions:ModuleAssemblyGlobPatterns")
+            .GetChildren()
+            .Select(i => i.Value)
+            .ToArray();
+        var moduleAssemblyNamePattern = configurationProvider.GetValue<string>("ModuleOptions:ModuleAssemblyNamePattern");
+        var assemblyLoader = new AssemblyLoader(
+            ConsoleLogger<AssemblyLoader>.Instance,
+            moduleAssemblyGlobPatterns!,
+            moduleAssemblyNamePattern);
+        var moduleDescriptors = assemblyLoader
+            .LoadAssemblies()
+            .Select(assembly => new ModuleDescriptor(assembly))
+            .ToArray();
+
+        return new ConfigurationContext
+        {
+            EnvironmentName = environmentName,
+            ConfigurationProvider = configurationProvider,
+            ModuleDescriptors = moduleDescriptors
+        };
+    }
+
+    /// <summary>
+    /// Configures the service collection for dependency injection.
+    /// </summary>
+    /// <param name="serviceCollection">The <see cref="IServiceCollection"/>.</param>
+    /// <param name="context">The <see cref="ConfigurationContext"/> shared between the configuration phases.</param>
+    public void ConfigureServiceCollection(IServiceCollection serviceCollection, ConfigurationContext context)
+    {
+        context.PolicyRegistry = serviceCollection.AddPolicyRegistry();
+        foreach (var moduleDescriptor in context.ModuleDescriptors)
+        {
+            moduleDescriptor.Module.ConfigureServiceCollection(
+                serviceCollection,
+                context.ConfigurationProvider,
+                context.PolicyRegistry);
+            RegisterDbContexts(serviceCollection, context.ConfigurationProvider, moduleDescriptor.Assembly);
+        }
+    }
+
+    /// <summary>
+    /// Configures the container for dependency injection.
+    /// </summary>
+    /// <param name="containerBuilder">The <see cref="ContainerBuilder"/>.</param>
+    /// <param name="context">The <see cref="ConfigurationContext"/> shared between the configuration phases.</param>
+    public void ConfigureContainer(ContainerBuilder containerBuilder, ConfigurationContext context)
+    {
+        containerBuilder.RegisterInstance(context.ConfigurationProvider).As<IConfigurationProvider>();
         containerBuilder.RegisterType<DbContextFactory>().As<IDbContextFactory>().SingleInstance();
         containerBuilder.RegisterType<UnitOfWorkProvider>().As<IUnitOfWorkProvider>().SingleInstance();
         containerBuilder.RegisterInstance(SocketConfig).As<DiscordSocketConfig>();
         containerBuilder.RegisterType<DiscordSocketClient>().SingleInstance();
         containerBuilder.Register(c => new InteractionService(c.Resolve<DiscordSocketClient>(), InteractionServiceConfig));
-        containerBuilder.RegisterOptions(configurationProvider.GetOptions<DiscordOptions>(DiscordOptions.SectionName));
-        containerBuilder.RegisterOptions(configurationProvider.GetOptions<ModuleOptions>(ModuleOptions.SectionName));
-        containerBuilder.RegisterOptions(configurationProvider.GetOptions<DatabaseOptions>(DatabaseOptions.SectionName));
-        containerBuilder.RegisterOptions(configurationProvider.GetOptions<ResourceOptions>(ResourceOptions.SectionName));
+        containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<DiscordOptions>(DiscordOptions.SectionName));
+        containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<ModuleOptions>(ModuleOptions.SectionName));
+        containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<DatabaseOptions>(DatabaseOptions.SectionName));
+        containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<ResourceOptions>(ResourceOptions.SectionName));
 
         RegisterServices(containerBuilder, Assembly.GetAssembly(typeof(Program))!);
-        RegisterModules(containerBuilder, serviceCollection, configurationProvider);
+        RegisterModules(containerBuilder, context);
     }
 
     /// <summary>
@@ -117,29 +164,13 @@ public sealed class Host
 
     private static void RegisterModules(
         ContainerBuilder containerBuilder,
-        IServiceCollection serviceCollection,
-        ConfigurationProvider configurationProvider)
+        ConfigurationContext context)
     {
-        var moduleAssemblyGlobPatterns = configurationProvider
-            .GetSection("ModuleOptions:ModuleAssemblyGlobPatterns")
-            .GetChildren()
-            .Select(i => i.Value)
-            .ToArray();
-        var moduleAssemblyNamePattern = configurationProvider.GetValue<string>("ModuleOptions:ModuleAssemblyNamePattern");
-        var assemblyLoader = new AssemblyLoader(
-            ConsoleLogger<AssemblyLoader>.Instance,
-            moduleAssemblyGlobPatterns!,
-            moduleAssemblyNamePattern);
-        var moduleDescriptors = assemblyLoader
-            .LoadAssemblies()
-            .Select(assembly => new ModuleDescriptor(assembly))
-            .ToArray();
-        foreach (var descriptor in moduleDescriptors)
+        foreach (var descriptor in context.ModuleDescriptors)
         {
             containerBuilder.RegisterInstance(descriptor).As<ModuleDescriptor>();
-            descriptor.Module.Configure(containerBuilder, configurationProvider);
+            descriptor.Module.ConfigureContainer(containerBuilder, context.ConfigurationProvider);
             RegisterServices(containerBuilder, descriptor.Assembly);
-            RegisterDbContexts(serviceCollection, configurationProvider, descriptor.Assembly);
         }
     }
 

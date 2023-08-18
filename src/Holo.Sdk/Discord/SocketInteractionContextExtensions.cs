@@ -33,7 +33,7 @@ public static class SocketInteractionContextExtensions
     /// </remarks>
     public static Task<IUser?> GetRelevantUserAsync(
         this SocketInteractionContext context,
-        IUser user)
+        IUser? user)
         => InternalGetRelevantUserAsync(context, user, null);
 
     /// <summary>

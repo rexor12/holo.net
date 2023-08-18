@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Holo.ServiceHost.Bot;
+using Holo.ServiceHost.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,15 +14,18 @@ internal sealed class Program
 {
     private static async Task Main(string[] args)
     {
-        var host = new Host();
         var builder = WebApplication.CreateBuilder(args);
+        var host = new Host();
+        var configurationContext = host.BuildContext(builder.Environment.EnvironmentName);
         builder.Services.AddLogging(configure => configure.AddConsole());
         builder.Services.AddOptions();
         builder.Services.AddControllers();
+        builder.Services.AddHttpClient();
+        host.ConfigureServiceCollection(builder.Services, configurationContext);
 
         builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
         builder.Host.ConfigureContainer<ContainerBuilder>(
-            (c, b) => host.Configure(b, builder.Services, builder.Environment.EnvironmentName));
+            (c, b) => host.ConfigureContainer(b, configurationContext));
 
         var app = builder.Build();
 
