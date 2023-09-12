@@ -13,16 +13,22 @@ public sealed class ConfigurationProvider : IConfigurationProvider
 
     public ConfigurationProvider(IConfigurationRoot configurationRoot)
     {
-        this._configurationRoot = configurationRoot;
+        _configurationRoot = configurationRoot;
     }
 
-    public static ConfigurationProvider Create(string environmentName, string environmentVariablePrefix = "HOLO_")
+    public static ConfigurationProvider Create(
+        string environmentName,
+        string environmentVariablePrefix = "HOLO_",
+        IConfigurationSource[]? extraConfigurationSources = null)
     {
         var configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.Add(new ExpandJsonConfigurationSource("appsettings.json", false, false));
         configurationBuilder.Add(new ExpandJsonConfigurationSource($"appsettings.{environmentName}.json", true, false));
         configurationBuilder.Add(new ExpandJsonConfigurationSource($"appsettings.override.json", true, false));
         configurationBuilder.AddEnvironmentVariables(environmentVariablePrefix);
+        if (extraConfigurationSources?.Length is not null and > 0)
+            foreach (var extraConfigurationSource in extraConfigurationSources)
+                configurationBuilder.Add(extraConfigurationSource);
 
         return new ConfigurationProvider(configurationBuilder.Build());
     }
@@ -35,7 +41,7 @@ public sealed class ConfigurationProvider : IConfigurationProvider
 
     public T GetValue<T>(string key)
     {
-        if (!this.TryGetValue<T>(key, out var value))
+        if (!TryGetValue<T>(key, out var value))
             throw new ArgumentOutOfRangeException(nameof(key), value, "No configuration for the specified key can be found.");
 
         return value;

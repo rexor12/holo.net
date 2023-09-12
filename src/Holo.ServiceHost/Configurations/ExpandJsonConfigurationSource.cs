@@ -12,9 +12,9 @@ public sealed class ExpandJsonConfigurationSource : JsonConfigurationSource
         ReloadOnChange = reloadOnChange;
     }
 
-    public override Microsoft.Extensions.Configuration.IConfigurationProvider Build(IConfigurationBuilder builder)
+    public override IConfigurationProvider Build(IConfigurationBuilder builder)
     {
-        this.EnsureDefaults(builder);
+        EnsureDefaults(builder);
 
         return base.Build(builder);
     }

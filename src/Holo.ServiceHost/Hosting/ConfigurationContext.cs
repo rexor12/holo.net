@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Holo.Sdk.Modules;
 using Holo.ServiceHost.Configurations;
 using Polly.Registry;
+using Serilog.Core;
 
 namespace Holo.ServiceHost.Hosting;
 
@@ -30,4 +31,9 @@ public sealed class ConfigurationContext
     /// Gets or sets the Polly policy registry.
     /// </summary>
     public IPolicyRegistry<string>? PolicyRegistry { get; set; }
+
+    /// <summary>
+    /// Gets or sets the mappings of logging level switches to their names.
+    /// </summary>
+    public required IReadOnlyDictionary<string, LoggingLevelSwitch> LevelSwitches { get; init; }
 }

@@ -13,7 +13,7 @@ using Polly.Extensions.Http;
 
 namespace Holo.Module.General;
 
-public sealed class Module : ModuleBase
+public sealed class GeneralModule : ModuleBase
 {
     protected override void OnConfigureContainer(
         ContainerBuilder containerBuilder,

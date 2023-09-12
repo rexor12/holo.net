@@ -16,6 +16,7 @@ using Holo.Sdk.Storage;
 using Holo.Sdk.Tasks;
 using Holo.ServiceHost.Bot;
 using Holo.ServiceHost.Configurations;
+using Holo.ServiceHost.Logging;
 using Holo.ServiceHost.Modules;
 using Holo.ServiceHost.Reflection;
 using Holo.ServiceHost.Resources;
@@ -25,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using Serilog.Core;
 using IStartable = Holo.Sdk.Lifecycle.IStartable;
 
 namespace Holo.ServiceHost.Hosting;
@@ -50,10 +52,13 @@ public sealed class Host
     /// Creates a <see cref="ConfigurationContext"/> to be shared between the configuration phases.
     /// </summary>
     /// <param name="environmentName">The name of the currently active application environment.</param>
+    /// <param name="levelSwitches">The available logging level switches by their names.</param>
     /// <returns>
     /// A new instance of <see cref="ConfigurationContext"/> to be shared between the configuration phases.
     /// </returns>
-    public ConfigurationContext BuildContext(string environmentName)
+    public ConfigurationContext BuildContext(
+        string environmentName,
+        IReadOnlyDictionary<string, LoggingLevelSwitch> levelSwitches)
     {
         var configurationProvider = ConfigurationProvider.Create(environmentName);
         var moduleAssemblyGlobPatterns = configurationProvider
@@ -63,7 +68,7 @@ public sealed class Host
             .ToArray();
         var moduleAssemblyNamePattern = configurationProvider.GetValue<string>("ModuleOptions:ModuleAssemblyNamePattern");
         var assemblyLoader = new AssemblyLoader(
-            ConsoleLogger<AssemblyLoader>.Instance,
+            SerilogLogger<AssemblyLoader>.Instance,
             moduleAssemblyGlobPatterns!,
             moduleAssemblyNamePattern);
         var moduleDescriptors = assemblyLoader
@@ -75,7 +80,9 @@ public sealed class Host
         {
             EnvironmentName = environmentName,
             ConfigurationProvider = configurationProvider,
-            ModuleDescriptors = moduleDescriptors
+            // LoggingConfigurationProvider = loggingConfigurationProvider,
+            ModuleDescriptors = moduleDescriptors,
+            LevelSwitches = levelSwitches
         };
     }
 
@@ -105,6 +112,8 @@ public sealed class Host
     public void ConfigureContainer(ContainerBuilder containerBuilder, ConfigurationContext context)
     {
         containerBuilder.RegisterInstance(context.ConfigurationProvider).As<IConfigurationProvider>();
+        containerBuilder.RegisterInstance(new LoggerManager(context.LevelSwitches)).As<ILoggerManager>();
+
         containerBuilder.RegisterType<DbContextFactory>().As<IDbContextFactory>().SingleInstance();
         containerBuilder.RegisterType<UnitOfWorkProvider>().As<IUnitOfWorkProvider>().SingleInstance();
         containerBuilder.RegisterInstance(SocketConfig).As<DiscordSocketConfig>();

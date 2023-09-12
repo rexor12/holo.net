@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -7,6 +8,10 @@ using Holo.ServiceHost.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Settings.Configuration;
 
 namespace Holo.ServiceHost;
 
@@ -14,10 +19,45 @@ internal sealed class Program
 {
     private static async Task Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        // Bootstrap logger to avoid losing logs during host startup.
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
+
         var host = new Host();
-        var configurationContext = host.BuildContext(builder.Environment.EnvironmentName);
-        builder.Services.AddLogging(configure => configure.AddConsole());
+        var app = CreateAppBuilder(args, host).Build();
+        ConfigureApp(app);
+
+        var logger = app.Services.GetService<ILogger<Program>>()!;
+        logger.LogInformation("Starting host...");
+        try
+        {
+            await RunAppAsync(app, host, logger);
+        }
+        finally
+        {
+            logger.LogInformation("Successfully shut down host");
+            await Log.CloseAndFlushAsync();
+        }
+    }
+
+    private static WebApplicationBuilder CreateAppBuilder(string[] args, Host host)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var levelSwitches = new Dictionary<string, LoggingLevelSwitch>();
+        var configurationContext = host.BuildContext(
+            builder.Environment.EnvironmentName,
+            levelSwitches);
+
+        builder.Host.UseSerilog((context, services, configuration) => configuration
+            .ReadFrom.Configuration(context.Configuration, new ConfigurationReaderOptions
+            {
+                OnLevelSwitchCreated = (name, levelSwitch) => levelSwitches[name] = levelSwitch
+            })
+            .ReadFrom.Services(services));
         builder.Services.AddOptions();
         builder.Services.AddControllers();
         builder.Services.AddHttpClient();
@@ -27,15 +67,18 @@ internal sealed class Program
         builder.Host.ConfigureContainer<ContainerBuilder>(
             (c, b) => host.ConfigureContainer(b, configurationContext));
 
-        var app = builder.Build();
+        return builder;
+    }
 
+    private static void ConfigureApp(WebApplication app)
+    {
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
+    }
 
-        var logger = app.Services.GetService<ILogger<Program>>()!;
-        logger.LogInformation("Starting host...");
-
+    private static async Task RunAppAsync(WebApplication app, Host host, Microsoft.Extensions.Logging.ILogger logger)
+    {
         var cancellationTokenSource = new CancellationTokenSource();
         Task hostTask = await host.StartAsync(app.Services, cancellationTokenSource.Token);
 
@@ -57,7 +100,5 @@ internal sealed class Program
             cancellationTokenSource.Dispose();
             hostTask.Dispose();
         }
-
-        logger.LogInformation("Successfully shut down host");
     }
 }
