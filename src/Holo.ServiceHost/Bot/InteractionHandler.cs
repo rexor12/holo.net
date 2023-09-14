@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Holo.Sdk.DI;
 using Holo.Sdk.Interactions;
 using Holo.Sdk.Interactions.Attributes;
+using Holo.Sdk.Interactions.Rules;
 using Holo.Sdk.Localization;
 using Holo.Sdk.Logging;
 using Holo.Sdk.Modules;
@@ -27,23 +28,26 @@ public sealed class InteractionHandler
     private IReadOnlyDictionary<ulong, ModuleInfo[]>? _guildBoundModules;
 
     private readonly DiscordSocketClient _client;
+    private readonly IEnumerable<IInteractionRule> _interactionRules;
     private readonly InteractionService _interactionService;
-    private readonly IOptions<DiscordOptions> _options;
-    private readonly IEnumerable<ModuleDescriptor> _moduleDescriptors;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<InteractionHandler> _logger;
+    private readonly IEnumerable<ModuleDescriptor> _moduleDescriptors;
+    private readonly IOptions<DiscordOptions> _options;
     private readonly IServiceProvider _serviceProvider;
 
     public InteractionHandler(
         DiscordSocketClient client,
+        IEnumerable<IInteractionRule> interactionRules,
         InteractionService interactionService,
-        IOptions<DiscordOptions> options,
         ILocalizationService localizationService,
         ILogger<InteractionHandler> logger,
         IEnumerable<ModuleDescriptor> moduleDescriptors,
+        IOptions<DiscordOptions> options,
         IServiceProvider serviceProvider)
     {
         _client = client;
+        _interactionRules = interactionRules;
         _interactionService = interactionService;
         _options = options;
         _moduleDescriptors = moduleDescriptors;
@@ -80,6 +84,13 @@ public sealed class InteractionHandler
             SocketUserCommandData data => data.Name,
             SocketAutocompleteInteractionData data => data.CommandName,
             _ => "<unknown>"
+        };
+
+    private static Exception? GetException(IResult interactionResult)
+        => interactionResult switch
+        {
+            ExecuteResult r => r.Exception,
+            _ => null
         };
 
     private async Task ReadyAsync()
@@ -144,31 +155,46 @@ public sealed class InteractionHandler
         return moduleInfo;
     }
 
-    private Task ExecuteInteractionAsync(SocketInteraction interaction)
+    private async Task ExecuteInteractionAsync(SocketInteraction interaction)
     {
-        if (interaction is SocketMessageComponent componentInteraction)
-            return ExecuteComponentInteractionAsync(componentInteraction);
-
-        return _interactionService.ExecuteCommandAsync(
-            new ExtendedInteractionContext(_client, interaction),
-            _serviceProvider);
-    }
-
-    private Task ExecuteComponentInteractionAsync(SocketMessageComponent interaction)
-    {
-        if (!ComponentHelper.TryParseCustomId(interaction.Data.CustomId, out var componentInfo))
+        var context = GetInteractionContext(interaction);
+        if (context == null)
         {
-            return interaction.RespondAsync(
+            await interaction.RespondAsync(
                 _localizationService.Localize("Interactions.InvalidInteractionError"),
                 ephemeral: true);
+            return;
         }
 
-        return _interactionService.ExecuteCommandAsync(
-            new ExtendedInteractionContext(_client, interaction)
-            {
-                ComponentInfo = componentInfo
-            },
-            _serviceProvider);
+        foreach (var rule in _interactionRules)
+        {
+            var result = await rule.EvaluateAsync(context);
+            if (!result.ShouldHalt)
+                continue;
+
+            var localizationKey = result.ResponseLocalizationKey ?? "Interactions.InvalidInteractionError";
+            await interaction.RespondAsync(
+                _localizationService.Localize(localizationKey, result.ResponseLocalizationArguments),
+                ephemeral: true);
+            return;
+        }
+
+        await _interactionService.ExecuteCommandAsync(context, _serviceProvider);
+    }
+
+    private ExtendedInteractionContext? GetInteractionContext(SocketInteraction interaction)
+    {
+        ComponentInfo? componentInfo = null;
+        if (interaction is SocketMessageComponent componentInteraction
+            && !ComponentHelper.TryParseCustomId(componentInteraction.Data.CustomId, out componentInfo))
+        {
+            return null;
+        }
+
+        return new ExtendedInteractionContext(_client, interaction)
+        {
+            ComponentInfo = componentInfo
+        };
     }
 
     private Task OnInteractionExecutedAsync(ICommandInfo commandInfo, IInteractionContext context, IResult result)
@@ -196,6 +222,7 @@ public sealed class InteractionHandler
 
             default:
                 _logger.LogError(
+                    GetException(result),
                     "An unhandled error occurred during the execution of the command '{CommandId}': {ErrorMessage}",
                     GetCommandId(interaction.Data),
                     result.ErrorReason);

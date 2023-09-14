@@ -7,10 +7,12 @@ namespace Holo.Sdk.Storage.Repositories;
 /// <summary>
 /// Abstract base class for a repository.
 /// </summary>
+/// <typeparam name="TIdentifier">The type of the entity's identifier.</typeparam>
 /// <typeparam name="TAggregateRoot">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the containing <see cref="DbContext"/>.</typeparam>
-public abstract class RepositoryBase<TAggregateRoot, TDbContext> : IRepository<ulong, TAggregateRoot, TDbContext>
-    where TAggregateRoot : AggregateRoot<ulong>
+public abstract class RepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : IRepository<TIdentifier, TAggregateRoot, TDbContext>
+    where TIdentifier : notnull
+    where TAggregateRoot : AggregateRoot<TIdentifier>
     where TDbContext : DbContext
 {
     /// <summary>
@@ -24,7 +26,7 @@ public abstract class RepositoryBase<TAggregateRoot, TDbContext> : IRepository<u
     protected IUnitOfWorkProvider UnitOfWorkProvider { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="RepositoryBase{TAggregateRoot, TDbContext}"/>.
+    /// Initializes a new instance of <see cref="RepositoryBase{TIdentifier, TAggregateRoot, TDbContext}"/>.
     /// </summary>
     /// <param name="dbContextFactory">
     /// The <see cref="IDbContextFactory"/> used for creating DbContexts.
@@ -41,11 +43,29 @@ public abstract class RepositoryBase<TAggregateRoot, TDbContext> : IRepository<u
     }
 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.GetAsync(TIdentifier)"/>
-    public async Task<TAggregateRoot> GetAsync(ulong identifier)
+    public abstract Task<TAggregateRoot> GetAsync(TIdentifier identifier);
+
+    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.TryGetAsync(TIdentifier)"/>
+    public abstract Task<TAggregateRoot?> TryGetAsync(TIdentifier identifier);
+
+    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.AddAsync(TAggregateRoot)"/>
+    public async Task AddAsync(TAggregateRoot entity)
     {
         await using var dbContextWrapper = GetDbContextWrapper(false);
-        return await GetDbSet(dbContextWrapper).FirstAsync(entity => entity.Identifier == identifier);
+
+        await GetDbSet(dbContextWrapper).AddAsync(entity);
     }
+
+    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.UpdateAsync(TAggregateRoot)"/>
+    public async Task UpdateAsync(TAggregateRoot entity)
+    {
+        await using var dbContextWrapper = GetDbContextWrapper(false);
+
+        GetDbSet(dbContextWrapper).Update(entity);
+    }
+
+    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.RemoveAsync(TIdentifier)"/>
+    public abstract Task RemoveAsync(TIdentifier identifier);
 
     /// <summary>
     /// Gets the <see cref="DbSet{TEntity}"/> used by this repository.

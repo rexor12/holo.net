@@ -12,7 +12,7 @@ namespace Holo.Module.General.Cookies.Storage.Repositories;
 /// </summary>
 [Service(typeof(IFortuneCookieRepository))]
 public sealed class FortuneCookieRepository :
-    RepositoryBase<FortuneCookie, CookiesDbContext>,
+    NumericIdentifierBasedRepositoryBase<FortuneCookie, CookiesDbContext>,
     IFortuneCookieRepository
 {
     /// <summary>

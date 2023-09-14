@@ -8,10 +8,10 @@ namespace Holo.Sdk.Storage;
 /// </summary>
 /// <typeparam name="TIdentifier">The type of the identifier of the entity.</typeparam>
 public abstract class AggregateRoot<TIdentifier> : IEquatable<AggregateRoot<TIdentifier>>
-    where TIdentifier : struct
+    where TIdentifier : notnull
 {
     [Column("id")]
-    public TIdentifier Identifier { get; set; }
+    public required TIdentifier Identifier { get; set; }
 
     /// <inheritdoc cref="object.Equals(object?)"/>
     public override bool Equals(object? other)

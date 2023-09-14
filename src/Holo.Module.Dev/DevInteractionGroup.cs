@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Holo.Module.Dev.Managers;
 using Holo.Sdk.Interactions;
 using Holo.Sdk.Interactions.Attributes;
 using Holo.Sdk.Localization;
@@ -15,14 +16,17 @@ namespace Holo.Module.Dev;
 public sealed class DevInteractionGroup : InteractionGroupBase
 {
     private readonly ILoggerManager _loggerManager;
+    private readonly IMaintenanceManager _maintenanceManager;
 
     public DevInteractionGroup(
         ILocalizationService localizationService,
         ILogger<DevInteractionGroup> logger,
-        ILoggerManager loggerManager)
+        ILoggerManager loggerManager,
+        IMaintenanceManager maintenanceManager)
         : base(localizationService, logger)
     {
         _loggerManager = loggerManager;
+        _maintenanceManager = maintenanceManager;
     }
 
     [SlashCommand("setloglevel", "Changes the current log level of the application.")]
@@ -32,10 +36,23 @@ public sealed class DevInteractionGroup : InteractionGroupBase
     {
         var newLogLevel = MapLogLevel(logLevel);
         _loggerManager.ChangeLogLevel(switchName, newLogLevel);
+        Logger.LogInformation("The log level has been changed to '{NewLogLevel}'", newLogLevel);
 
-        Logger.Log(newLogLevel, "The log level has been changed to '{NewLogLevel}'.", newLogLevel);
+        return RespondAsync(LocalizationService.Localize(
+            "Modules.Dev.SetLogLevel.LogLevelChanged",
+            ("LogLevel", newLogLevel)));
+    }
 
-        return RespondAsync($"The log level has been changed to '{newLogLevel}'.");
+    [SlashCommand("setmode", "Sets the operation mode of the application.")]
+    public async Task SetModeAsync([Summary("mode", "The new operation mode.")] OperationModeArg operationMode)
+    {
+        await _maintenanceManager.SetOperationModeAsync(operationMode == OperationModeArg.Maintenance);
+        Logger.LogInformation("Changed application mode to '{NewMode}'", operationMode);
+
+        await RespondAsync(LocalizationService.Localize(
+            operationMode == OperationModeArg.Maintenance
+                ? "Modules.Dev.SetOperationMode.MaintenanceModeEnabled"
+                : "Modules.Dev.SetOperationMode.NormalModeEnabled"));
     }
 
     private static LogLevel MapLogLevel(LogLevelArg logLevelArg)
@@ -55,5 +72,11 @@ public sealed class DevInteractionGroup : InteractionGroupBase
         Information,
         Warning,
         Error
+    }
+
+    public enum OperationModeArg
+    {
+        Normal = 0,
+        Maintenance
     }
 }

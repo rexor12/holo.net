@@ -9,4 +9,9 @@ public static class DataSizes
     /// Recommended size for medium length user input.
     /// </summary>
     public static readonly int UserText = 512;
+
+    /// <summary>
+    /// Recommended size for string type identifiers.
+    /// </summary>
+    public static readonly int StringId = 250;
 }
