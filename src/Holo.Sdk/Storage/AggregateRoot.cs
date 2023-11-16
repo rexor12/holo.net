@@ -2,13 +2,12 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Holo.Sdk.Storage;
-
 /// <summary>
 /// Abstract base class for aggregate root entities.
 /// </summary>
 /// <typeparam name="TIdentifier">The type of the identifier of the entity.</typeparam>
 public abstract class AggregateRoot<TIdentifier> : IEquatable<AggregateRoot<TIdentifier>>
-    where TIdentifier : notnull
+    where TIdentifier : struct, IIdentifier
 {
     [Column("id")]
     public required TIdentifier Identifier { get; set; }

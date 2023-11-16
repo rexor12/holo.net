@@ -12,7 +12,7 @@ using Holo.Sdk.Assemblies;
 using Holo.Sdk.Configurations;
 using Holo.Sdk.Logging;
 using Holo.Sdk.Modules;
-using Holo.Sdk.Storage;
+using Holo.Sdk.Storage.Sequences;
 using Holo.Sdk.Tasks;
 using Holo.ServiceHost.Bot;
 using Holo.ServiceHost.Configurations;
@@ -20,7 +20,8 @@ using Holo.ServiceHost.Logging;
 using Holo.ServiceHost.Modules;
 using Holo.ServiceHost.Reflection;
 using Holo.ServiceHost.Resources;
-using Holo.ServiceHost.Storage;
+using Holo.ServiceHost.Storage.Configuration;
+using Holo.ServiceHost.Storage.Sequences.HiLo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -114,8 +115,6 @@ public sealed class Host
         containerBuilder.RegisterInstance(context.ConfigurationProvider).As<IConfigurationProvider>();
         containerBuilder.RegisterInstance(new LoggerManager(context.LevelSwitches)).As<ILoggerManager>();
 
-        containerBuilder.RegisterType<DbContextFactory>().As<IDbContextFactory>().SingleInstance();
-        containerBuilder.RegisterType<UnitOfWorkProvider>().As<IUnitOfWorkProvider>().SingleInstance();
         containerBuilder.RegisterInstance(SocketConfig).As<DiscordSocketConfig>();
         containerBuilder.RegisterType<DiscordSocketClient>().SingleInstance();
         containerBuilder.Register(c => new InteractionService(c.Resolve<DiscordSocketClient>(), InteractionServiceConfig));
@@ -123,6 +122,7 @@ public sealed class Host
         containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<ModuleOptions>(ModuleOptions.SectionName));
         containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<DatabaseOptions>(DatabaseOptions.SectionName));
         containerBuilder.RegisterOptions(context.ConfigurationProvider.GetOptions<ResourceOptions>(ResourceOptions.SectionName));
+        containerBuilder.RegisterGeneric(typeof(HiLoSequenceGenerator<>)).As(typeof(IHiLoSequenceGenerator<>)).SingleInstance();
 
         RegisterServices(containerBuilder, Assembly.GetAssembly(typeof(Program))!);
         RegisterModules(containerBuilder, context);

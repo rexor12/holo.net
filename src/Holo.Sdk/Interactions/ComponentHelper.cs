@@ -29,7 +29,7 @@ public static class ComponentHelper
         customData ??= Array.Empty<object>();
         var stringBuilder = new StringBuilder(componentId.Length + 2 * sizeof(ulong) + 5 * customData.Length);
         stringBuilder.Append(componentId);
-        stringBuilder.Append(":");
+        stringBuilder.Append(':');
 
         if (customData.Length > 0)
         {
@@ -37,10 +37,10 @@ public static class ComponentHelper
             {
                 stringBuilder.Append(customDataItem);
                 if (index + 1 < customData.Length)
-                    stringBuilder.Append(",");
+                    stringBuilder.Append(',');
             }
 
-            stringBuilder.Append(",");
+            stringBuilder.Append(',');
         }
 
         stringBuilder.Append(boundUserId);

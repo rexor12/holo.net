@@ -11,7 +11,6 @@ using Holo.Sdk.Interactions;
 using Holo.Sdk.Interactions.Attributes;
 using Holo.Sdk.Interactions.Rules;
 using Holo.Sdk.Localization;
-using Holo.Sdk.Logging;
 using Holo.Sdk.Modules;
 using Holo.ServiceHost.Reflection;
 using Microsoft.Extensions.Logging;

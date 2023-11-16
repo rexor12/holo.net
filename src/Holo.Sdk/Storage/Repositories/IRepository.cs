@@ -10,7 +10,7 @@ namespace Holo.Sdk.Storage.Repositories;
 /// <typeparam name="TAggregateRoot">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the containing <see cref="DbContext"/>.</typeparam>
 public interface IRepository<TIdentifier, TAggregateRoot, TDbContext>
-    where TIdentifier : notnull
+    where TIdentifier : struct, IIdentifier
     where TAggregateRoot : AggregateRoot<TIdentifier>
     where TDbContext : DbContext
 {

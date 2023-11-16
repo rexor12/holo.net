@@ -484,32 +484,39 @@
                 "user_warned_no_reason": "I've successfully warned <@{user_id}>."
             }
         },
-        "reminders": {
-            "remove_reminder_workflow": {
-                "reminder_deleted": "I have removed your reminder. However, tread cautiously like a vigilant hawk, lest it eludes your memory.",
-                "reminder_not_found_error": "There exists no such reminder in your repertoire. It is akin to seeking an apple in a barren desert."
+        "Reminders": {
+            "ViewAllRemindersButton": "View all",
+            "CancelReminderButton": "Cancel",
+            "RemoveReminder": {
+                "DeletedMessage": "I have removed your reminder. However, tread cautiously like a vigilant hawk, lest it eludes your memory.",
+                "NotFoundError": "There exists no such reminder in your repertoire. It is akin to seeking an apple in a barren desert.",
+                "CooldownError": "Pray, wait a bit; cleaning up takes some time. ({SecondsLeft:0.0} seconds)"
             },
-            "set_reminder_workflow": {
-                "reminder_set": "I shall remind you at <t:{time}:f>.",
-                "message_out_of_range_error": "For the message's length ought to fall within the confines of {min} and {max} characters. Please, shorten your message and try again.",
-                "invalid_params_error": "The combination of {param1} and {param2} as parameters is not permissible. Please, try again.",
-                "too_many_reminders_error": "It appears you have gathered a veritable menagerie of reminders, reaching the limit. Like an agile wolf selecting the juiciest apple to savor, choose one to remove and try anew.",
-                "invalid_time_input_error": "Kindly inform me of the precise moment you wish for my gentle reminder.",
-                "time_input_parsing_error": "It would be truly splendid if you could kindly tell me the time in a manner that I, too, can comprehend."
+            "AddReminder": {
+                "ReminderAdded": "I shall remind you at <t:{Timestamp}:f>.",
+                "MessageLengthOutOfRangeError": "For the message's length ought to fall within the confines of {MinLength} and {MaxLength} characters. Please, shorten your message and try again.",
+                "TooManyRemindersError": "It appears you have gathered a veritable menagerie of reminders, reaching the limit. Like an agile wolf selecting the juiciest apple to savor, choose one to remove and try anew.",
+                "InvalidTimeInputError": "Kindly inform me of the precise moment you wish for my gentle reminder. You may specify it in the format of, for example, \"2d 16h 30m\" (for days, hours and minutes).",
+                "DueTimeOutOfRangeError": "It appears you have requested a due time that is too late for me to remember. (Max. {MaxDueTimeMinutes:0} minutes.)",
+                "IntervalOutOfRangeError": "It appears you have requested an interval that is too far ahead in the future for me to remember. (Max. {MaxIntervalMinutes:0} minutes.)",
+                "CooldownError": "Pray, wait a bit; I need time to memorize your task. ({SecondsLeft:0.0} seconds)"
             },
-            "view_reminders_workflow": {
-                "no_reminders": "You do not have any reminders.",
-                "embed_title": "Reminders",
-                "embed_description": "Reminders of <@{user_id}>.",
-                "embed_footer": "Use the reminder's number for removal.",
-                "embed_field_name": "#{reminder_id}",
-                "embed_field_value": "> Message: {message}\n> Next trigger: <t:{time}:f>\n> Repeats: {repeats}"
+            "ViewReminders": {
+                "NoReminders": "You do not have any reminders.",
+                "EmbedTitle": "Reminders",
+                "EmbedDescription": "Reminders of <@{UserId}>.",
+                "EmbedFooter": "Use the reminder's number for removal.",
+                "EmbedFieldName": "Reminder #{ReminderId}",
+                "EmbedFieldNameRepeating": "Reminder #{ReminderId} ♻️",
+                "EmbedFieldValue": "> When: <t:{Timestamp}:f>\n> Message: {Message}",
+                "CooldownError": "Pray, wait a bit; for your reminders shall wait for you, too. ({SecondsLeft:0.0} seconds)",
+                "RemoveReminderButton": "#{ReminderId}"
             },
-            "reminder_processor": {
-                "reminder_dm": "Behold, <@{user_id}>! Your reminder is beckoning your attention at its destined hour.\n> {message}",
-                "reminder_dm_no_message": "Behold, <@{user_id}>! Your reminder is beckoning your attention at its destined hour... can you recall the subject, though?",
-                "reminder_dm_belated": "<@{user_id}>, albeit late, your reminder is beckoning your attention:\n> {message}\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness.",
-                "reminder_dm_belated_no_message": "<@{user_id}>, albeit late, your reminder is beckoning your attention... can you recall the subject, though?\n\nA service disruption hindered my ability to remind you at <t:{trigger_time}:f>. I kindly ask for your forgiveness."
+            "ReminderProcessor": {
+                "Reminder": "Behold, <@{UserId}>! Your reminder is beckoning your attention at its destined hour.\n> {Message}",
+                "ReminderEmpty": "Behold, <@{UserId}>! Your reminder is beckoning your attention at its destined hour... can you recall the subject, though?",
+                "ReminderBelated": "<@{UserId}>, albeit late, your reminder is beckoning your attention:\n> {Message}\n\nA service disruption hindered my ability to remind you at <t:{TriggerTime}:f>. I kindly ask for your forgiveness.",
+                "ReminderEmptyBelated": "<@{UserId}>, albeit late, your reminder is beckoning your attention... can you recall the subject, though?\n\nA service disruption hindered my ability to remind you at <t:{TriggerTime}:f>. I kindly ask for your forgiveness."
             }
         },
         "Say": {

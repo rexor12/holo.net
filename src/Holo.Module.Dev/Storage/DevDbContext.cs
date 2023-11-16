@@ -24,5 +24,10 @@ public sealed class DevDbContext : DbContext
             .Entity<FeatureState>()
             .ToTable(FeatureState.TableName, SchemaName)
             .HasKey(entity => entity.Identifier);
+
+        modelBuilder
+            .Entity<FeatureState>()
+            .Property(entity => entity.Identifier)
+            .HasConversion(v => v.Value, v => new FeatureStateId(v));
     }
 }

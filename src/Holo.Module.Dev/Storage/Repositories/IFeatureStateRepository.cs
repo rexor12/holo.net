@@ -6,6 +6,6 @@ namespace Holo.Module.Dev.Storage.Repositories;
 /// <summary>
 /// Interface for a repository used for accessing <see cref="FeatureState"/> entities.
 /// </summary>
-public interface IFeatureStateRepository : IRepository<string, FeatureState, DevDbContext>
+public interface IFeatureStateRepository : IRepository<FeatureStateId, FeatureState, DevDbContext>
 {
 }

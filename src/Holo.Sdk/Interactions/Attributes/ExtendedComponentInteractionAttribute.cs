@@ -9,8 +9,8 @@ namespace Holo.Sdk.Interactions.Attributes;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ExtendedComponentInteractionAttribute : ComponentInteractionAttribute
 {
-    public ExtendedComponentInteractionAttribute(string customId)
-        : base(ExtendCustomId(customId), false, RunMode.Default)
+    public ExtendedComponentInteractionAttribute(string customId, bool ignoreGroupNames = false)
+        : base(ExtendCustomId(customId), ignoreGroupNames, RunMode.Default)
     {
     }
 

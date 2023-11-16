@@ -7,7 +7,7 @@ namespace Holo.Module.General.Cookies.Storage.Repositories;
 /// <summary>
 /// Interface for a repository used for accessing <see cref="FortuneCookie"/> entities.
 /// </summary>
-public interface IFortuneCookieRepository : IRepository<ulong, FortuneCookie, CookiesDbContext>
+public interface IFortuneCookieRepository : IRepository<FortuneCookieId, FortuneCookie, CookiesDbContext>
 {
     /// <summary>
     /// Gets a randomly selected fortune cookie.

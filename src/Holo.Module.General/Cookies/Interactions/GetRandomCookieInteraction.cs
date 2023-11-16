@@ -43,7 +43,7 @@ public sealed class GetRandomCookieInteraction : InteractionGroupBase
                     .WithFooter(new EmbedFooterBuilder().WithText(
                         LocalizationService.Localize(
                             "Modules.General.GetRandomCookie.EmbedFooter",
-                            ("Id", fortuneCookie.Identifier))))
+                            ("Id", fortuneCookie.Identifier.Value))))
                     .Build()
             });
     }

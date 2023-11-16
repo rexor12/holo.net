@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Holo.Sdk.Storage.Repositories;
@@ -8,8 +7,9 @@ namespace Holo.Sdk.Storage.Repositories;
 /// </summary>
 /// <typeparam name="TAggregateRoot">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the containing <see cref="DbContext"/>.</typeparam>
-public abstract class StringIdentifierBasedRepositoryBase<TAggregateRoot, TDbContext> : RepositoryBase<string, TAggregateRoot, TDbContext>
-    where TAggregateRoot : AggregateRoot<string>
+public abstract class StringIdentifierBasedRepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : RepositoryBase<TIdentifier, TAggregateRoot, TDbContext>
+    where TIdentifier : struct, IIdentifier<string>
+    where TAggregateRoot : AggregateRoot<TIdentifier>
     where TDbContext : DbContext
 {
     /// <summary>
@@ -18,41 +18,11 @@ public abstract class StringIdentifierBasedRepositoryBase<TAggregateRoot, TDbCon
     /// <param name="dbContextFactory">
     /// The <see cref="IDbContextFactory"/> used for creating DbContexts.
     /// </param>
-    /// <param name="unitOfWorkProvider">
-    /// The <see cref="IUnitOfWorkProvider"/> used for accessing units of work.
+    /// <param name="databaseServices">
+    /// The <see cref="IDatabaseServices"/> used to access database services.
     /// </param>
-    protected StringIdentifierBasedRepositoryBase(
-        IDbContextFactory dbContextFactory,
-        IUnitOfWorkProvider unitOfWorkProvider)
-        : base(dbContextFactory, unitOfWorkProvider)
+    protected StringIdentifierBasedRepositoryBase(IDatabaseServices databaseServices)
+        : base(databaseServices)
     {
-    }
-
-    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.GetAsync(TIdentifier)"/>
-    public override async Task<TAggregateRoot> GetAsync(string identifier)
-    {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
-
-        return await GetDbSet(dbContextWrapper).FirstAsync(entity => entity.Identifier == identifier);
-    }
-
-    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.TryGetAsync(TIdentifier)"/>
-    public override async Task<TAggregateRoot?> TryGetAsync(string identifier)
-    {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
-
-        return await GetDbSet(dbContextWrapper).FirstOrDefaultAsync(entity => entity.Identifier == identifier);
-    }
-
-    /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.RemoveAsync(TIdentifier)"/>
-    public override async Task RemoveAsync(string identifier)
-    {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
-        var dbSet = GetDbSet(dbContextWrapper);
-        var entity = await dbSet.FirstOrDefaultAsync(entity => entity.Identifier == identifier);
-        if (entity == null)
-            return;
-
-        dbSet.Remove(entity);
     }
 }

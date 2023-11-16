@@ -48,4 +48,14 @@ public static class EnumerableExtensions
     /// <typeparam name="TSource">The type of the enumerable's elements.</typeparam>
     public static IEnumerable<(TSource Entry, int Index)> WithIndex<TSource>(this IEnumerable<TSource> source)
         => source.Select((item, index) => (item, index));
+
+    /// <summary>
+    /// Appends a value to the end of the sequence, if it isn't <c>null</c>.
+    /// </summary>
+    /// <param name="source">A sequence of values.</param>
+    /// <param name="item">The value to append to <paramref name="source"/>.</param>
+    /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+    /// <returns>A new sequence that ends with element, if it isn't <c>null</c>.</returns>
+    public static IEnumerable<TSource> AppendNotNull<TSource>(this IEnumerable<TSource> source, TSource? item)
+        => item == null ? source : source.Append(item);
 }

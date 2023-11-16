@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using Holo.Module.Dev.Models;
 using Holo.Sdk.DI;
 using Holo.Sdk.Storage;
@@ -11,26 +13,24 @@ namespace Holo.Module.Dev.Storage.Repositories;
 /// </summary>
 [Service(typeof(IFeatureStateRepository))]
 public sealed class FeatureStateRepository :
-    StringIdentifierBasedRepositoryBase<FeatureState, DevDbContext>,
+    StringIdentifierBasedRepositoryBase<FeatureStateId, FeatureState, DevDbContext>,
     IFeatureStateRepository
 {
     /// <summary>
     /// Initializes a new instance of <see cref="FeatureStateRepository"/>.
     /// </summary>
-    /// <param name="dbContextFactory">
-    /// The <see cref="IDbContextFactory"/> used for creating DbContexts.
+    /// <param name="databaseServices">
+    /// The <see cref="IDatabaseServices"/> used to access units of work.
     /// </param>
-    /// <param name="unitOfWorkProvider">
-    /// The <see cref="IUnitOfWorkProvider"/> used for accessing units of work.
-    /// </param>
-    public FeatureStateRepository(
-        IDbContextFactory dbContextFactory,
-        IUnitOfWorkProvider unitOfWorkProvider)
-        : base(dbContextFactory, unitOfWorkProvider)
+    public FeatureStateRepository(IDatabaseServices databaseServices)
+        : base(databaseServices)
     {
     }
 
     /// <inheritdoc cref="RepositoryBase{TAggregateRoot, TDbContext}.GetDbSet(TDbContext)"/>
     protected override DbSet<FeatureState> GetDbSet(DevDbContext dbContext)
         => dbContext.FeatureStates;
+
+    protected override Expression<Func<FeatureState, bool>> GetEqualByIdExpression(FeatureStateId identifier)
+        => entity => entity.Identifier == identifier;
 }

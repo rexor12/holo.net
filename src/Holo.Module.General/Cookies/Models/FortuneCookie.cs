@@ -3,7 +3,7 @@ using Holo.Sdk.Storage;
 
 namespace Holo.Module.General.Cookies.Models;
 
-public sealed class FortuneCookie : AggregateRoot<ulong>
+public sealed class FortuneCookie : AggregateRoot<FortuneCookieId>
 {
     public const string TableName = "fortune_cookies";
 

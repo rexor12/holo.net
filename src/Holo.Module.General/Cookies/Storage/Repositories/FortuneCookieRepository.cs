@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Holo.Module.General.Cookies.Models;
 using Holo.Sdk.DI;
@@ -12,29 +14,24 @@ namespace Holo.Module.General.Cookies.Storage.Repositories;
 /// </summary>
 [Service(typeof(IFortuneCookieRepository))]
 public sealed class FortuneCookieRepository :
-    NumericIdentifierBasedRepositoryBase<FortuneCookie, CookiesDbContext>,
+    NumericIdentifierBasedRepositoryBase<FortuneCookieId, FortuneCookie, CookiesDbContext>,
     IFortuneCookieRepository
 {
     /// <summary>
     /// Initializes a new instance of <see cref="FortuneCookieRepository"/>.
     /// </summary>
-    /// <param name="dbContextFactory">
-    /// The <see cref="IDbContextFactory"/> used for creating DbContexts.
+    /// <param name="databaseServices">
+    /// The <see cref="IDatabaseServices"/> used to access units of work.
     /// </param>
-    /// <param name="unitOfWorkProvider">
-    /// The <see cref="IUnitOfWorkProvider"/> used for accessing units of work.
-    /// </param>
-    public FortuneCookieRepository(
-        IDbContextFactory dbContextFactory,
-        IUnitOfWorkProvider unitOfWorkProvider)
-        : base(dbContextFactory, unitOfWorkProvider)
+    public FortuneCookieRepository(IDatabaseServices databaseServices)
+        : base(databaseServices)
     {
     }
 
     /// <inheritdoc cref="IFortuneCookieRepository.GetRandomFortuneCookieAsync"/>
     public async Task<FortuneCookie> GetRandomFortuneCookieAsync()
     {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
+        await using var dbContextWrapper = GetDbContextWrapper();
         var queryable = dbContextWrapper.DbContext.GetRandomFortuneCookie();
 
         return await queryable.FirstAsync();
@@ -43,4 +40,7 @@ public sealed class FortuneCookieRepository :
     /// <inheritdoc cref="RepositoryBase{TAggregateRoot, TDbContext}.GetDbSet(TDbContext)"/>
     protected override DbSet<FortuneCookie> GetDbSet(CookiesDbContext dbContext)
         => dbContext.FortuneCookies;
+
+    protected override Expression<Func<FortuneCookie, bool>> GetEqualByIdExpression(FortuneCookieId identifier)
+        => entity => entity.Identifier == identifier;
 }

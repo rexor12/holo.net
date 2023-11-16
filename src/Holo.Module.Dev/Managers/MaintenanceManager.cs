@@ -12,7 +12,7 @@ namespace Holo.Module.Dev.Managers;
 [Service(typeof(IMaintenanceManager))]
 public sealed class MaintenanceManager : IMaintenanceManager
 {
-    private const string MaintenanceModeFeatureName = "MaintenanceMode";
+    private static readonly FeatureStateId MaintenanceModeFeatureStateId = new("MaintenanceMode");
 
     private readonly IFeatureStateRepository _featureStateRepository;
     private readonly IUnitOfWorkProvider _unitOfWorkProvider;
@@ -28,7 +28,7 @@ public sealed class MaintenanceManager : IMaintenanceManager
     /// <inheritdoc cref="IMaintenanceManager.IsMaintenanceModeEnabledAsync"/>
     public async Task<bool> IsMaintenanceModeEnabledAsync()
     {
-        var featureState = await _featureStateRepository.TryGetAsync(MaintenanceModeFeatureName);
+        var featureState = await _featureStateRepository.TryGetAsync(MaintenanceModeFeatureStateId);
 
         return featureState != null && featureState.IsEnabled;
     }
@@ -38,12 +38,12 @@ public sealed class MaintenanceManager : IMaintenanceManager
     {
         await using var unitOfWork = _unitOfWorkProvider.GetOrCreate();
 
-        var featureState = await _featureStateRepository.TryGetAsync(MaintenanceModeFeatureName);
+        var featureState = await _featureStateRepository.TryGetAsync(MaintenanceModeFeatureStateId);
         if (featureState == null)
         {
             await _featureStateRepository.AddAsync(new FeatureState
             {
-                Identifier = MaintenanceModeFeatureName,
+                Identifier = MaintenanceModeFeatureStateId,
                 IsEnabled = isMaintenanceMode
             });
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,19 +12,14 @@ namespace Holo.Sdk.Storage.Repositories;
 /// <typeparam name="TAggregateRoot">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the containing <see cref="DbContext"/>.</typeparam>
 public abstract class RepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : IRepository<TIdentifier, TAggregateRoot, TDbContext>
-    where TIdentifier : notnull
+    where TIdentifier : struct, IIdentifier
     where TAggregateRoot : AggregateRoot<TIdentifier>
     where TDbContext : DbContext
 {
     /// <summary>
-    /// Gets the <see cref="IDbContextFactory"/> used for creating DbContexts.
+    /// The <see cref="IDatabaseServices"/> used to access database services.
     /// </summary>
-    protected IDbContextFactory DbContextFactory { get; }
-
-    /// <summary>
-    /// Gets the <see cref="IUnitOfWorkProvider"/> used for accessing units of work.
-    /// </summary>
-    protected IUnitOfWorkProvider UnitOfWorkProvider { get; }
+    protected IDatabaseServices DatabaseServices { get; }
 
     /// <summary>
     /// Initializes a new instance of <see cref="RepositoryBase{TIdentifier, TAggregateRoot, TDbContext}"/>.
@@ -34,24 +30,31 @@ public abstract class RepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : 
     /// <param name="unitOfWorkProvider">
     /// The <see cref="IUnitOfWorkProvider"/> used for accessing units of work.
     /// </param>
-    protected RepositoryBase(
-        IDbContextFactory dbContextFactory,
-        IUnitOfWorkProvider unitOfWorkProvider)
+    protected RepositoryBase(IDatabaseServices databaseServices)
     {
-        DbContextFactory = dbContextFactory;
-        UnitOfWorkProvider = unitOfWorkProvider;
+        DatabaseServices = databaseServices;
     }
 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.GetAsync(TIdentifier)"/>
-    public abstract Task<TAggregateRoot> GetAsync(TIdentifier identifier);
+    public async Task<TAggregateRoot> GetAsync(TIdentifier identifier)
+    {
+        await using var dbContextWrapper = GetDbContextWrapper();
+
+        return await GetDbSet(dbContextWrapper).FirstAsync(GetEqualByIdExpression(identifier));
+    }
 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.TryGetAsync(TIdentifier)"/>
-    public abstract Task<TAggregateRoot?> TryGetAsync(TIdentifier identifier);
+    public async Task<TAggregateRoot?> TryGetAsync(TIdentifier identifier)
+    {
+        await using var dbContextWrapper = GetDbContextWrapper();
+
+        return await GetDbSet(dbContextWrapper).FirstOrDefaultAsync(GetEqualByIdExpression(identifier));
+    }
 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.AddAsync(TAggregateRoot)"/>
     public async Task AddAsync(TAggregateRoot entity)
     {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
+        await using var dbContextWrapper = GetDbContextWrapper();
 
         await GetDbSet(dbContextWrapper).AddAsync(entity);
     }
@@ -59,13 +62,22 @@ public abstract class RepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.UpdateAsync(TAggregateRoot)"/>
     public async Task UpdateAsync(TAggregateRoot entity)
     {
-        await using var dbContextWrapper = GetDbContextWrapper(false);
+        await using var dbContextWrapper = GetDbContextWrapper();
 
         GetDbSet(dbContextWrapper).Update(entity);
     }
 
     /// <inheritdoc cref="IRepository{TIdentifier, TAggregateRoot, TDbContext}.RemoveAsync(TIdentifier)"/>
-    public abstract Task RemoveAsync(TIdentifier identifier);
+    public async Task RemoveAsync(TIdentifier identifier)
+    {
+        await using var dbContextWrapper = GetDbContextWrapper();
+        var dbSet = GetDbSet(dbContextWrapper);
+        var entity = await dbSet.FirstOrDefaultAsync(GetEqualByIdExpression(identifier));
+        if (entity == null)
+            return;
+
+        dbSet.Remove(entity);
+    }
 
     /// <summary>
     /// Gets the <see cref="DbSet{TEntity}"/> used by this repository.
@@ -74,21 +86,21 @@ public abstract class RepositoryBase<TIdentifier, TAggregateRoot, TDbContext> : 
     /// <returns>The <see cref="DbSet{TEntity}"/> used by this repository.</returns>
     protected abstract DbSet<TAggregateRoot> GetDbSet(TDbContext dbContext);
 
-    /// <summary>
-    /// Gets a <see cref="DbContextWrapper"/>.
-    /// </summary>
-    /// <param name="shouldSaveChanges">
-    /// Whether the changes should be saves before the disposal of the <see cref="DbContext"/>.
-    /// This parameter is ignored when the queries are executed within a unit of work.
-    /// </param>
-    /// <returns></returns>
-    protected DbContextWrapper GetDbContextWrapper(bool shouldSaveChanges = true)
-    {
-        var unitOfWork = UnitOfWorkProvider.Current;
-        if (unitOfWork != null)
-            return new DbContextWrapper(unitOfWork.GetDbContext<TDbContext>(), false);
+    protected abstract Expression<Func<TAggregateRoot, bool>> GetEqualByIdExpression(TIdentifier identifier);
 
-        return new DbContextWrapper(DbContextFactory.Create<TDbContext>(), true, shouldSaveChanges);
+    /// <summary>
+    /// Gets a <see cref="DbContextWrapper"/> that either wraps an existing <see cref="DbContext"/>
+    /// or a newly created one. When disposed as a wrapper in a unit of work, the underlying
+    /// <see cref="DbContext"/> is not disposed.
+    /// </summary>
+    /// <returns>A new instance of <see cref="DbContextWrapper"/>.</returns>
+    protected DbContextWrapper GetDbContextWrapper()
+    {
+        var unitOfWork = DatabaseServices.UnitOfWorkProvider.Current;
+
+        return unitOfWork == null
+            ? new DbContextWrapper(DatabaseServices.DbContextFactory.Create<TDbContext>(), true, true)
+            : new DbContextWrapper(unitOfWork.GetDbContext<TDbContext>(), false);
     }
 
     /// <summary>

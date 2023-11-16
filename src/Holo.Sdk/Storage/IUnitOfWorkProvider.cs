@@ -6,6 +6,12 @@ namespace Holo.Sdk.Storage;
 public interface IUnitOfWorkProvider
 {
     /// <summary>
+    /// Gets whether there is an active <see cref="IUnitOfWork"/>.
+    /// </summary>
+    /// <value></value>
+    bool HasUnitOfWork { get; }
+
+    /// <summary>
     /// Gets the currently active <see cref="IUnitOfWork"/>, if any.
     /// </summary>
     IUnitOfWork? Current { get; }

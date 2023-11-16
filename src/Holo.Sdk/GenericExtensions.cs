@@ -16,7 +16,9 @@ public static class GenericExtensions
     /// <param name="memberName">The name of the member, used for exceptions.</param>
     /// <returns>The value of the member, if not <c>null</c>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the given value is <c>null</c>.</exception>
-    public static T AssertNotNull<T>(this T? member, [CallerMemberName] string? memberName = null)
+    public static T AssertNotNull<T>(
+        this T? member,
+        [CallerArgumentExpression(nameof(member))] string? memberName = null)
         where T : class
         => member ?? throw new ArgumentNullException(memberName);
 }

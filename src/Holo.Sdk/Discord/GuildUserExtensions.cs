@@ -20,10 +20,16 @@ public static class GuildUserExtensions
     /// If any, the color of the highest position guild role with a non-default color;
     /// otherwise, the specified fallback color.
     /// </returns>
-    public static Color GetAccent(this IGuildUser user, Color? fallbackColor = null)
-        => user.Guild.Roles
+    public static Color GetAccent(this IGuildUser? user, Color? fallbackColor = null)
+    {
+        fallbackColor ??= Color.Default;
+        if (user == null)
+            return fallbackColor.Value;
+
+        return user.Guild.Roles
             .Where(role => role.Color != Color.Default && user.RoleIds.Contains(role.Id))
             .OrderByDescending(role => role.Position)
             .Select(role => role.Color)
-            .FirstOrDefault(Color.Default);
+            .FirstOrDefault(fallbackColor.Value);
+    }
 }

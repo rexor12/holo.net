@@ -34,6 +34,11 @@ public sealed class CookiesDbContext : DbContext
             .HasKey(entity => entity.Identifier);
 
         modelBuilder
+            .Entity<FortuneCookie>()
+            .Property(entity => entity.Identifier)
+            .HasConversion(v => (long)v, v => (FortuneCookieId)v);
+
+        modelBuilder
             .HasDbFunction(() => GetRandomFortuneCookie())
             .HasSchema(SchemaName)
             .HasName("get_fortune_cookie");
