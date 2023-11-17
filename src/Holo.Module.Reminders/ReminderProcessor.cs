@@ -122,7 +122,7 @@ public sealed class ReminderProcessor :
         {
             await ProcessReminderAsync(reminder).ConfigureAwait(false);
         }
-        catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden)
+        catch (HttpException e) when (e.HttpCode is HttpStatusCode.Forbidden or HttpStatusCode.NotFound)
         {
             _logger.LogDebug(
                 e,

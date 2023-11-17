@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Holo.Sdk.Chrono;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Holo.Sdk.Interactions.Attributes;
 
@@ -57,25 +59,26 @@ public sealed class CooldownAttribute : PreconditionAttribute
         ICommandInfo commandInfo,
         IServiceProvider services)
     {
-        // TODO IDateTimeService
         if (IgnoreGuildPermissions.HasValue
             && context.User is IGuildUser guildUser
             && guildUser.GuildPermissions.Has(IgnoreGuildPermissions.Value))
             return Task.FromResult(PreconditionResult.FromSuccess());
 
+        var dateTimeProvider = services.GetRequiredService<IDateTimeProvider>();
+        var now = dateTimeProvider.Now();
         var cooldownInfo = _cooldowns.GetOrAdd(context.User.Id, userId => new CooldownInfo
         {
             UserId = context.User.Id,
-            EndsAt = DateTime.UtcNow + Duration
+            EndsAt = now + Duration
         });
 
         lock (cooldownInfo.LockObject)
         {
-            var timeLeft = cooldownInfo.EndsAt - DateTime.UtcNow;
+            var timeLeft = cooldownInfo.EndsAt - now;
             if (timeLeft <= TimeSpan.Zero)
             {
                 cooldownInfo.Uses = 1;
-                cooldownInfo.EndsAt = DateTime.UtcNow + Duration;
+                cooldownInfo.EndsAt = now + Duration;
                 return Task.FromResult(PreconditionResult.FromSuccess());
             }
 
